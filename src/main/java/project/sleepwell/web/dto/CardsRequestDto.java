@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.sleepwell.domain.cards.Cards;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -13,13 +14,13 @@ public class CardsRequestDto {
     private LocalDateTime startSleep;
     private LocalDateTime endSleep;
     private Long totalSleep;
-    private String tag;
+    private List<String> tag;
     private Long condition;
     private String memo;
 
     //save,update dto
     @Builder
-    public CardsRequestDto(LocalDateTime startSleep, LocalDateTime endSleep, Long totalSleep, String tag, Long condition, String memo) {
+    public CardsRequestDto(LocalDateTime startSleep, LocalDateTime endSleep, Long totalSleep, List<String> tag, Long condition, String memo) {
         this.startSleep = startSleep;
         this.endSleep = endSleep;
         this.totalSleep = totalSleep;

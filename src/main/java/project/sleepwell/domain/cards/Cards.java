@@ -3,14 +3,16 @@ package project.sleepwell.domain.cards;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import project.sleepwell.domain.TimeStamped;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor
 @Entity
-public class Cards {
+public class Cards extends TimeStamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,11 +29,9 @@ public class Cards {
     @Column(nullable = false)
     private Long totalSleep;
 
-    // createdAt 추가 -> timestamped 확장
-
     // tag 리스트로 변경
-    @Column
-    private String tag;
+    @ElementCollection
+    private List<String> tag;
 
     @Column(nullable = false)
     private Long condition;
@@ -42,7 +42,7 @@ public class Cards {
 
     // 생성자 대신에 @Builder를 통해 빌더 클래스를 사용 -> 지금 채워야할 필드의 역할이 무엇인지 정확히 지정
     @Builder
-    public Cards(LocalDateTime startSleep, LocalDateTime endSleep, Long totalSleep, String tag , Long condition, String memo) {
+    public Cards(LocalDateTime startSleep, LocalDateTime endSleep, Long totalSleep, List<String> tag , Long condition, String memo) {
         this.startSleep = startSleep;
         this.endSleep = endSleep;
         this.totalSleep = totalSleep;
@@ -51,7 +51,7 @@ public class Cards {
         this.memo = memo;
     }
 
-    public void update(LocalDateTime startSleep, LocalDateTime endSleep, Long totalSleep, String tag ,Long condition, String memo){
+    public void update(LocalDateTime startSleep, LocalDateTime endSleep, Long totalSleep, List<String> tag ,Long condition, String memo){
         this.startSleep = startSleep;
         this.endSleep = endSleep;
         this.totalSleep = totalSleep;
