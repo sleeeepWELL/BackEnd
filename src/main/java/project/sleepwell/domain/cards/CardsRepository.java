@@ -3,7 +3,9 @@ package project.sleepwell.domain.cards;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 
 // Entity Class 인 Cards 와 같은 위치에 놓은 이유는 Entity 클래스는 기본 Repository 없이는 제대로 된 역할을 할 수 없기 때문
@@ -12,4 +14,6 @@ public interface CardsRepository extends JpaRepository<Cards, Long> { // <Entity
 
     @Query("select p from Cards p order by p.id desc")
     List<Cards> findAllDesc();
+
+    Optional<Cards> findBySelectedAt(LocalDate selectedAt);
 }
