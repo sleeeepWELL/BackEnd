@@ -45,8 +45,8 @@ public class CardsService {
     }
 
     //전체조회
-    public List<CardsResponseDto> findAllDesc() {
-        return cardsRepository.findAllDesc().stream().map(CardsResponseDto::new)
+    public List<CardsResponseDto> findAll() {
+        return cardsRepository.findAll().stream().map(CardsResponseDto::new)
                 .collect(Collectors.toList());
     }
 

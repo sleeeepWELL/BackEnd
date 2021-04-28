@@ -18,8 +18,8 @@ public class CardsRestController {
 
     //전체 조회
     @GetMapping("/calendars")
-    public List<CardsResponseDto> findAllDesc(){
-        return cardsService.findAllDesc();
+    public List<CardsResponseDto> findAll(){
+        return cardsService.findAll();
     }
 
     //게시

@@ -59,7 +59,10 @@ public class Cards{
     public void update(LocalTime startSleep, LocalTime endSleep, List<String> tag ,Long condition, String memo, LocalDate selectedAt){
         this.startSleep = startSleep;
         this.endSleep = endSleep;
-        this.totalSleep = ChronoUnit.MINUTES.between(startSleep, endSleep);
+        this.totalSleep = ChronoUnit.MINUTES.between(startSleep, endSleep); // 기상시간 - 취침시간
+        if (this.totalSleep < 0) { // 음수라면
+            this.totalSleep = this.totalSleep + 1440L; //1440 더함
+        }
         this.selectedAt = selectedAt;
         this.condition = condition;
         this.tag = tag;
