@@ -29,8 +29,8 @@ public class CardsService {
         Cards cards = cardsRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id)
         );
-        cards.update(requestDto.getStartSleep(), requestDto.getEndSleep(), requestDto.getTotalSleep(),
-                requestDto.getTag(),requestDto.getCondition(), requestDto.getMemo());
+        cards.update(requestDto.getStartSleep(), requestDto.getEndSleep(),
+                requestDto.getTag(),requestDto.getCondition(), requestDto.getMemo(), requestDto.getSelectedAt());
 
         return "ok";
     }

@@ -4,19 +4,19 @@ import lombok.Getter;
 import project.sleepwell.domain.cards.Cards;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 @Getter
 public class CardsResponseDto {
     private Long id;
-    private LocalDateTime startSleep;
-    private LocalDateTime endSleep;
+    private LocalTime startSleep;
+    private LocalTime endSleep;
     private Long totalSleep;
     private List<String> tag;
     private Long condition;
     private String memo;
-    private LocalDate createdAt;
+    private LocalDate selectedAt;
 
     public CardsResponseDto(Cards entity){
         this.id = entity.getId();
@@ -26,6 +26,6 @@ public class CardsResponseDto {
         this.tag = entity.getTag();
         this.condition = entity.getCondition();
         this.memo = entity.getMemo();
-        this.createdAt = entity.getCreatedAt();
+        this.selectedAt = entity.getSelectedAt();
     }
 }

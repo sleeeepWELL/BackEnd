@@ -15,7 +15,7 @@ public class CardsRestController {
     private final CardsService cardsService;
 
     //전체 조회
-    @GetMapping("/cards")
+    @GetMapping("/calendars")
     public List<CardsResponseDto> findAllDesc(){
         return cardsService.findAllDesc();
     }
