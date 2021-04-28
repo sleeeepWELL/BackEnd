@@ -8,6 +8,7 @@ import project.sleepwell.web.dto.CardsRequestDto;
 import project.sleepwell.web.dto.CardsResponseDto;
 
 import javax.transaction.Transactional;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,35 +26,35 @@ public class CardsService {
 
     //수정
     @Transactional
-    public String update(Long id, CardsRequestDto requestDto){
-        Cards cards = cardsRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id)
+    public String update(LocalDate selectedAt, CardsRequestDto requestDto){
+        Cards cards = cardsRepository.findBySelectedAt(selectedAt).orElseThrow(
+                () -> new IllegalArgumentException("해당 게시글이 없습니다. 날짜=" + selectedAt)
         );
-        cards.update(requestDto.getStartSleep(), requestDto.getEndSleep(), requestDto.getTotalSleep(),
-                requestDto.getTag(),requestDto.getCondition(), requestDto.getMemo());
+        cards.update(requestDto.getStartSleep(), requestDto.getEndSleep(),
+                requestDto.getTag(),requestDto.getCondition(), requestDto.getMemo(), requestDto.getSelectedAt());
 
         return "ok";
     }
 
     //상세조회
-    public CardsResponseDto findById (Long id) {
-        Cards entity = cardsRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id)
+    public CardsResponseDto findBySelectedAt(LocalDate selectedAt) {
+        Cards entity = cardsRepository.findBySelectedAt(selectedAt).orElseThrow(
+                () -> new IllegalArgumentException("해당 게시글이 없습니다. 날짜=" + selectedAt)
         );
         return new CardsResponseDto(entity);
     }
 
     //전체조회
-    public List<CardsResponseDto> findAllDesc() {
-        return cardsRepository.findAllDesc().stream().map(CardsResponseDto::new)
+    public List<CardsResponseDto> findAll() {
+        return cardsRepository.findAll().stream().map(CardsResponseDto::new)
                 .collect(Collectors.toList());
     }
 
     //삭제
     @Transactional
-    public String delete(Long id) {
-        Cards cards = cardsRepository.findById(id).orElseThrow(
-                () -> new IllegalArgumentException("해당 게시글이 없습니다. id=" + id)
+    public String delete(LocalDate selectedAt) {
+        Cards cards = cardsRepository.findBySelectedAt(selectedAt).orElseThrow(
+                () -> new IllegalArgumentException("해당 게시글이 없습니다. 날짜=" + selectedAt)
         );
         cardsRepository.delete(cards);
         return "ok";
