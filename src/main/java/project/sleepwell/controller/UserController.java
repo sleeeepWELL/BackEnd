@@ -17,6 +17,15 @@ public class UserController {
     private final UserService userService;
 
 
+    @GetMapping("/test")
+    public String test() {
+        return "test: success.";
+    }
+
+    @GetMapping("/only/user")
+    public String testUser() {
+        return "권한 있는 사람만 보이는 메세지";
+    }
 
     //email, username, password
     @PostMapping("/signup")
@@ -25,7 +34,7 @@ public class UserController {
     }
 
     //login
-    @PostMapping("/login")
+    @PostMapping("/api/login")
     public ResponseEntity<TokenDto> login(@Valid @RequestBody LoginDto loginDto) {
         return ResponseEntity.ok(userService.login(loginDto));  //token 발행
     }
@@ -44,8 +53,8 @@ public class UserController {
 //    }
 
     //아직 쓸 데 없음
-    @GetMapping("/{email}")
-    public ResponseEntity<UserResponseDto> getUserInfo(@PathVariable String email) {
-        return ResponseEntity.ok(userService.getUserInfo(email));
-    }
+//    @GetMapping("/{email}")
+//    public ResponseEntity<UserResponseDto> getUserInfo(@PathVariable String email) {
+//        return ResponseEntity.ok(userService.getUserInfo(email));
+//    }
 }

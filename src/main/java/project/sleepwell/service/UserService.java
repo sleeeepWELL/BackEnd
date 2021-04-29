@@ -124,14 +124,14 @@ public class UserService {
 
 
     //처음부터 인자로 email 을 받아서 유저 정보를 찾고, email 다시 반환
-    @Transactional(readOnly = true)
-    public UserResponseDto getUserInfo(String email) {
-        return userRepository.findByEmail(email)
-                .map(UserResponseDto::of)       //stream
-                .orElseThrow(
-                        () -> new RuntimeException("유저 정보가 존재하지 않습니다.")
-                );
-    }
+//    @Transactional(readOnly = true)
+//    public UserResponseDto getUserInfo(String email) {
+//        return userRepository.findByEmail(email)
+//                .map(UserResponseDto::of)       //stream
+//                .orElseThrow(
+//                        () -> new RuntimeException("유저 정보가 존재하지 않습니다.")
+//                );
+//    }
 
     //SecurityUtil 에서 로그인 한 유저 정보를 찾아서 email 만 반환
 //    @Transactional(readOnly = true)

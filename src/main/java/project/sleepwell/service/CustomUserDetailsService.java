@@ -21,7 +21,8 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<User> user = userRepository.findByUsername(username);
+        //== 이게 도대체 뭔데 findByUsername 은 401 에러가 뜨는 거지 ==// 한 2시간 날린 거 같은데
+        Optional<User> user = userRepository.findByEmail(username);
         return user.map(this::principalDetails)
                     .orElseThrow(() -> new UsernameNotFoundException("데이터베이스에서 찾을 수 없습니다."));
 
