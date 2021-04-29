@@ -2,6 +2,7 @@ package project.sleepwell.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import project.sleepwell.service.cards.CardsService;
 import project.sleepwell.web.dto.CardsRequestDto;
@@ -13,6 +14,11 @@ import java.util.List;
 @RequiredArgsConstructor
 @RestController
 public class CardsRestController {
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String exceptionHandler(Exception e){
+        return e.getMessage();
+    }
 
     private final CardsService cardsService;
 
