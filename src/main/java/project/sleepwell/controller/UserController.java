@@ -1,11 +1,10 @@
 package project.sleepwell.controller;
 
+import com.nimbusds.oauth2.sdk.TokenRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.sleepwell.dto.LoginDto;
-import project.sleepwell.dto.SignupRequestDto;
-import project.sleepwell.dto.UserResponseDto;
+import project.sleepwell.dto.*;
 import project.sleepwell.repository.UserRepository;
 import project.sleepwell.service.UserService;
 
@@ -27,15 +26,22 @@ public class UserController {
 
     //login
     @PostMapping("/login")
-    public Long login(@RequestBody LoginDto loginDto) {
-        return userService.login(loginDto);
+    public ResponseEntity<TokenDto> login(@Valid @RequestBody LoginDto loginDto) {
+        return ResponseEntity.ok(userService.login(loginDto));  //token 발행
+    }
+
+    @PostMapping("/reissue")
+    public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
+        return ResponseEntity.ok(userService.reissue(tokenRequestDto));
     }
 
 
-    @GetMapping("/mypage")
-    public ResponseEntity<UserResponseDto> getMyInfo() {    //email 만 반환
-        return ResponseEntity.ok(userService.getMyInfo());
-    }
+
+
+//    @GetMapping("/mypage")
+//    public ResponseEntity<UserResponseDto> getMyInfo() {    //email 만 반환
+//        return ResponseEntity.ok(userService.getMyInfo());
+//    }
 
     //아직 쓸 데 없음
     @GetMapping("/{email}")

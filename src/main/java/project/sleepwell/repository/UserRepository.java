@@ -12,4 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     //중복 가입 방지
     boolean existsByEmail(String email);
+
+    //custom service
+    Optional<User> findByUsername(String username);
 }

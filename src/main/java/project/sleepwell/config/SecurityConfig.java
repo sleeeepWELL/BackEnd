@@ -1,7 +1,6 @@
 package project.sleepwell.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -12,7 +11,6 @@ import project.sleepwell.jwt.JwtAuthenticationEntryPoint;
 import project.sleepwell.jwt.JwtSecurityConfig;
 import project.sleepwell.jwt.JwtTokenProvider;
 import project.sleepwell.security.oauth2.CustomOAuth2UserService;
-import project.sleepwell.domain.Role;
 
 
 @RequiredArgsConstructor

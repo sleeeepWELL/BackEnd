@@ -17,7 +17,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String username;    //nickname 처럼 활용용
+    private String username;    //nickname 처럼 활용
 
     @NotNull
     private String email;
@@ -36,7 +36,7 @@ public class User {
         this.authority = authority;
     }
 
-    public String getRoleKey() {
-        return this.role.getKey();
-    }
+//    public String getRoleKey() {
+//        return this.role.getKey();
+//    }
 }
