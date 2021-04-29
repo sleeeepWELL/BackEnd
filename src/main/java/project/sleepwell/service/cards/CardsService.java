@@ -28,10 +28,10 @@ public class CardsService {
     @Transactional
     public String update(LocalDate selectedAt, CardsRequestDto requestDto){
         Cards cards = cardsRepository.findBySelectedAt(selectedAt).orElseThrow(
-                () -> new IllegalArgumentException("해당 게시글이 없습니다. 날짜=" + selectedAt)
+                () -> new IllegalArgumentException(""+selectedAt)
         );
         cards.update(requestDto.getStartSleep(), requestDto.getEndSleep(),
-                requestDto.getTag(),requestDto.getCondition(), requestDto.getMemo(), requestDto.getSelectedAt());
+                requestDto.getTag(), requestDto.getCondition(), requestDto.getMemo(), requestDto.getSelectedAt());
 
         return "ok";
     }
@@ -39,7 +39,7 @@ public class CardsService {
     //상세조회
     public CardsResponseDto findBySelectedAt(LocalDate selectedAt) {
         Cards entity = cardsRepository.findBySelectedAt(selectedAt).orElseThrow(
-                () -> new IllegalArgumentException("해당 게시글이 없습니다. 날짜=" + selectedAt)
+                () -> new IllegalArgumentException("" + selectedAt)
         );
         return new CardsResponseDto(entity);
     }
@@ -54,7 +54,7 @@ public class CardsService {
     @Transactional
     public String delete(LocalDate selectedAt) {
         Cards cards = cardsRepository.findBySelectedAt(selectedAt).orElseThrow(
-                () -> new IllegalArgumentException("해당 게시글이 없습니다. 날짜=" + selectedAt)
+                () -> new IllegalArgumentException("" + selectedAt)
         );
         cardsRepository.delete(cards);
         return "ok";
