@@ -20,7 +20,6 @@ public class Cards{
     private Long id;
 
     @Column(nullable = false)
-//    @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss") // Spring 에서 자동으로 타입변환을 해줘서 어노테이션을 안써도 되는걸까.. 그렇다면 클라이언트에서 어떤 형식으로 주는 것 까지 먹을까
     private LocalTime startSleep;
 
     @Column(nullable = false)
