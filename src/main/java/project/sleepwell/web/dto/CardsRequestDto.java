@@ -1,5 +1,6 @@
 package project.sleepwell.web.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,11 +14,14 @@ import java.util.List;
 @NoArgsConstructor
 // View Layer와 DB Layer의 역할 분리를 철저하게 하는 것이 좋음
 public class CardsRequestDto {
+    @JsonFormat(pattern = "HH:mm")//@JsonFormat -> 날짜가 배열로 출력되는 것을 지정된 패턴으로 출력하게 함
     private LocalTime startSleep;
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime endSleep;
     private List<String> tag;
     private Long condition;
     private String memo;
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate selectedAt;
 
 
