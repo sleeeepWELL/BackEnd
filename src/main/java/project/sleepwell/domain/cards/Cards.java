@@ -26,7 +26,10 @@ public class Cards{
     private LocalTime endSleep;
 
     @Column
-    private Long totalSleep;
+    private Long totalSleepHour;
+
+    @Column
+    private Long totalSleepMinute;
 
     @ElementCollection
     private List<String> tag;
@@ -45,9 +48,13 @@ public class Cards{
     public Cards(LocalTime startSleep, LocalTime endSleep, List<String> tag , Long condition, String memo, LocalDate selectedAt) {
         this.startSleep = startSleep;
         this.endSleep = endSleep;
-        this.totalSleep = ChronoUnit.MINUTES.between(startSleep, endSleep); // 기상시간 - 취침시간
-        if (this.totalSleep < 0) { // 음수라면
-            this.totalSleep = this.totalSleep + 1440L; //1440 더함
+        this.totalSleepMinute = ChronoUnit.MINUTES.between(startSleep, endSleep)%60; // 기상시간 - 취침시간 % 60
+        if (this.totalSleepMinute < 0) { // 음수이면
+            this.totalSleepMinute = this.totalSleepMinute + 60L;
+        }
+        this.totalSleepHour = ChronoUnit.MINUTES.between(startSleep, endSleep)/60; // 기상시간 - 취침시간 / 60
+        if (this.totalSleepHour <= 0) { // 음수, 0이면
+            this.totalSleepHour = this.totalSleepHour + 23L;
         }
         this.selectedAt = selectedAt;
         this.condition = condition;
@@ -58,9 +65,13 @@ public class Cards{
     public void update(LocalTime startSleep, LocalTime endSleep, List<String> tag ,Long condition, String memo, LocalDate selectedAt){
         this.startSleep = startSleep;
         this.endSleep = endSleep;
-        this.totalSleep = ChronoUnit.MINUTES.between(startSleep, endSleep); // 기상시간 - 취침시간
-        if (this.totalSleep < 0) { // 음수라면
-            this.totalSleep = this.totalSleep + 1440L; //1440 더함
+        this.totalSleepMinute = ChronoUnit.MINUTES.between(startSleep, endSleep)%60;
+        if (this.totalSleepMinute < 0) {
+            this.totalSleepMinute = this.totalSleepMinute + 60L;
+        }
+        this.totalSleepHour = ChronoUnit.MINUTES.between(startSleep, endSleep)/60;
+        if (this.totalSleepHour <= 0) {
+            this.totalSleepHour = this.totalSleepHour + 23L;
         }
         this.selectedAt = selectedAt;
         this.condition = condition;

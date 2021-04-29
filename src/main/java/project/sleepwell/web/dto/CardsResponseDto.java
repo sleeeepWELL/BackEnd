@@ -15,7 +15,8 @@ public class CardsResponseDto {
     private LocalTime startSleep;
     @JsonFormat(pattern = "HH:mm")
     private LocalTime endSleep;
-    private Long totalSleep;
+    private Long totalSleepHour;
+    private Long totalSleepMinute;
     private List<String> tag;
     private Long condition;
     private String memo;
@@ -26,7 +27,8 @@ public class CardsResponseDto {
         this.id = entity.getId();
         this.startSleep = entity.getStartSleep();
         this.endSleep = entity.getEndSleep();
-        this.totalSleep = entity.getTotalSleep();
+        this.totalSleepHour = entity.getTotalSleepHour();
+        this.totalSleepMinute = entity.getTotalSleepMinute();
         this.tag = entity.getTag();
         this.condition = entity.getCondition();
         this.memo = entity.getMemo();
