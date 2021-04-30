@@ -1,27 +1,26 @@
 package project.sleepwell.service;
 
-import com.azul.crs.shared.models.UserRole;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.security.SecurityUtil;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.sleepwell.domain.Authority;
-import project.sleepwell.domain.RefreshToken;
-import project.sleepwell.domain.User;
-import project.sleepwell.dto.*;
+import project.sleepwell.domain.user.Authority;
+import project.sleepwell.domain.refreshtoken.RefreshToken;
+import project.sleepwell.domain.user.User;
+import project.sleepwell.web.dto.LoginDto;
+import project.sleepwell.web.dto.SignupRequestDto;
+import project.sleepwell.web.dto.TokenDto;
+import project.sleepwell.web.dto.TokenRequestDto;
 import project.sleepwell.jwt.JwtTokenProvider;
-import project.sleepwell.kakao.KakaoOAuth2;
-import project.sleepwell.kakao.KakaoUserInfo;
-import project.sleepwell.repository.RefreshTokenRepository;
-import project.sleepwell.repository.UserRepository;
+import project.sleepwell.kakaologin.KakaoOAuth2;
+import project.sleepwell.kakaologin.KakaoUserInfo;
+import project.sleepwell.domain.refreshtoken.RefreshTokenRepository;
+import project.sleepwell.domain.user.UserRepository;
 
 @RequiredArgsConstructor
 @Service

@@ -1,7 +1,5 @@
-package project.sleepwell.kakao;
+package project.sleepwell.kakaologin;
 
-
-import com.google.gson.JsonObject;
 import org.json.JSONObject;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;

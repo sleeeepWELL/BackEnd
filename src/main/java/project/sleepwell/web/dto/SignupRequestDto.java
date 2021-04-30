@@ -1,11 +1,10 @@
-package project.sleepwell.dto;
+package project.sleepwell.web.dto;
 
 
 import lombok.Getter;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import project.sleepwell.domain.Authority;
-import project.sleepwell.domain.User;
+import project.sleepwell.domain.user.Authority;
+import project.sleepwell.domain.user.User;
 
 import javax.validation.constraints.NotNull;
 

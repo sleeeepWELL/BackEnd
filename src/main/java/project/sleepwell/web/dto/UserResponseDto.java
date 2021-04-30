@@ -1,9 +1,9 @@
-package project.sleepwell.dto;
+package project.sleepwell.web.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import project.sleepwell.domain.User;
+import project.sleepwell.domain.user.User;
 
 //response 는 안쓴다.
 @Getter

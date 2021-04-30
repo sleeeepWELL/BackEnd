@@ -1,12 +1,10 @@
-package project.sleepwell.domain;
-
+package project.sleepwell.domain.user;
 
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 
 @NoArgsConstructor
 @Getter
@@ -19,7 +17,6 @@ public class User {
 
     private String username;    //nickname 처럼 활용
 
-//    @NotNull
     private String email;
 
     private String password;

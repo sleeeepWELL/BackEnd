@@ -1,4 +1,4 @@
-package project.sleepwell.kakao;
+package project.sleepwell.kakaologin;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

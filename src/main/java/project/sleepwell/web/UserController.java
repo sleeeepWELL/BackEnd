@@ -1,17 +1,16 @@
-package project.sleepwell.controller;
+package project.sleepwell.web;
 
-import com.nimbusds.oauth2.sdk.TokenRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import project.sleepwell.dto.*;
-import project.sleepwell.repository.UserRepository;
 import project.sleepwell.service.KakaoService;
 import project.sleepwell.service.UserService;
+import project.sleepwell.web.dto.LoginDto;
+import project.sleepwell.web.dto.SignupRequestDto;
+import project.sleepwell.web.dto.TokenDto;
+import project.sleepwell.web.dto.TokenRequestDto;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.util.HashMap;
 
 @RequiredArgsConstructor
 @RestController

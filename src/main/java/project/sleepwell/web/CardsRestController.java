@@ -2,9 +2,8 @@ package project.sleepwell.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import project.sleepwell.service.cards.CardsService;
+import project.sleepwell.service.CardsService;
 import project.sleepwell.web.dto.CardsRequestDto;
 import project.sleepwell.web.dto.CardsResponseDto;
 

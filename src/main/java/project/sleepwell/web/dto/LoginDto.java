@@ -1,12 +1,9 @@
-package project.sleepwell.dto;
+package project.sleepwell.web.dto;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-
-import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor
