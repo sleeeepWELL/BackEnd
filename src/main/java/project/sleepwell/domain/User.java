@@ -19,7 +19,7 @@ public class User {
 
     private String username;    //nickname 처럼 활용
 
-    @NotNull
+//    @NotNull
     private String email;
 
     private String password;
@@ -39,10 +39,11 @@ public class User {
         this.kakaoId = null;
     }
 
-    public User(String username, String password, Authority authority, Long kakaoId) {
+    public User(String username, String password, String email, Authority authority, Long kakaoId) {  //email 이 없음
         this.username = username;
         this.password = password;
-        this.authority = Authority.ROLE_USER;
+        this.email = email;
+        this.authority = Authority.ROLE_USER;       //authority 해도 됨.
         this.kakaoId = kakaoId;
     }
 

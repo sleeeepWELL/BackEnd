@@ -28,7 +28,7 @@ public class UserController {
 
     @GetMapping("/only/user")
     public String testUser() {
-        return "권한 있는 사람만 보이는 메세지";
+        return "권한 있는 사람만 보이는 메세지. only user can read.";
     }
 
     //email, username, password

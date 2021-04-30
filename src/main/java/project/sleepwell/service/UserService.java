@@ -4,10 +4,12 @@ import com.azul.crs.shared.models.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.security.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,6 +35,7 @@ public class UserService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final KakaoOAuth2 kakaoOAuth2;
+    private final AuthenticationManager authenticationManager;
     private static final String ADMIN_TOKEN = "sample1234asdf";
 
     /**
@@ -115,6 +118,7 @@ public class UserService {
 
     }
 
+    //kakao
     public void kakaoLogin(String code) {
         //카카오 OAuth2 를 통해 카카오 사용자 정보 조회
         KakaoUserInfo userInfo = kakaoOAuth2.getUserInfo(code);
@@ -131,7 +135,7 @@ public class UserService {
         User kakaoUser = userRepository.findByKakaoId(kakaoId)
                 .orElse(null);
 
-        //카카오 정보로 회원가입
+        //카카오 정보로 회원가입 (null 이면 가입)
         if (kakaoUser == null) {
             //패스워드 인코딩
             String encodedPassword = passwordEncoder.encode(password);
@@ -139,7 +143,7 @@ public class UserService {
             Authority authority = Authority.ROLE_USER;
 
             //오류 고칠 것==========================//
-            kakaoUser = new User(nickname, encodedPassword, email, role, kakaoId);
+            kakaoUser = new User(username, encodedPassword, email, authority, kakaoId);
             userRepository.save(kakaoUser);
         }
 
@@ -151,11 +155,6 @@ public class UserService {
 
     }
 
-}
-
-
-
-        }
 
     //== 체크 메서드 ==//
 //    public void isAvailable(String email) {
@@ -163,13 +162,6 @@ public class UserService {
 //            throw new IllegalArgumentException("이미 사용 중인 이메일 입니다.");
 //        }
 //    }
-
-
-
-
-
-
-
 
 
 
@@ -195,4 +187,4 @@ public class UserService {
 
 
 
-}
+}   //닫는 최종 괄호
