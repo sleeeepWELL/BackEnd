@@ -3,6 +3,7 @@ package project.sleepwell.web;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import project.sleepwell.kakaologin.KakaoOAuth2;
 import project.sleepwell.service.KakaoService;
 import project.sleepwell.service.UserService;
 import project.sleepwell.web.dto.LoginDto;
@@ -18,6 +19,7 @@ public class UserController {
 
     private final UserService userService;
     private final KakaoService kakaoService;
+    private final KakaoOAuth2 kakaoOAuth2;
 
 
     @GetMapping("/test")
@@ -51,17 +53,18 @@ public class UserController {
     @RequestMapping("/kakaoLogin")  //get mapping
     public String kakaoLogin(@RequestParam String code) {
 
-        String access_Token = kakaoService.getAccessToken(code);
-        System.out.println("######" + code);
-        System.out.println("access_token: " + access_Token);
-
-//        HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_Token);
-//        System.out.println("login Controller = " + userInfo);
+////        String access_Token = kakaoService.getAccessToken(code);
+//        String access_Token = kakaoOAuth2.getAccessToken(code);
+//        System.out.println("######" + code);
+//        System.out.println("access_token: " + access_Token);
+//
+////        HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_Token);
+////        System.out.println("login Controller = " + userInfo);
 
         userService.kakaoLogin(code);
 
 
-        return "kakao login test.";
+        return "kakao login: success.";
     }
 
 
