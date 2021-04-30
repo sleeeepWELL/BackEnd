@@ -36,9 +36,15 @@ public class User {
         this.email = email;
         this.password = password;
         this.authority = authority;
+        this.kakaoId = null;
     }
 
-//    public String getRoleKey() {
-//        return this.role.getKey();
-//    }
+    public User(String username, String password, Authority authority, Long kakaoId) {
+        this.username = username;
+        this.password = password;
+        this.authority = Authority.ROLE_USER;
+        this.kakaoId = kakaoId;
+    }
+
+
 }

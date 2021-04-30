@@ -1,17 +1,23 @@
 package project.sleepwell.service;
 
+import com.azul.crs.shared.models.UserRole;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.security.SecurityUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.sleepwell.domain.Authority;
 import project.sleepwell.domain.RefreshToken;
 import project.sleepwell.domain.User;
 import project.sleepwell.dto.*;
 import project.sleepwell.jwt.JwtTokenProvider;
+import project.sleepwell.kakao.KakaoOAuth2;
+import project.sleepwell.kakao.KakaoUserInfo;
 import project.sleepwell.repository.RefreshTokenRepository;
 import project.sleepwell.repository.UserRepository;
 
@@ -25,6 +31,9 @@ public class UserService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+
+    private final KakaoOAuth2 kakaoOAuth2;
+    private static final String ADMIN_TOKEN = "sample1234asdf";
 
     /**
      * create user
@@ -105,6 +114,48 @@ public class UserService {
 
 
     }
+
+    public void kakaoLogin(String code) {
+        //카카오 OAuth2 를 통해 카카오 사용자 정보 조회
+        KakaoUserInfo userInfo = kakaoOAuth2.getUserInfo(code);
+        Long kakaoId = userInfo.getId();
+        String nickname = userInfo.getNickname();
+        String email = userInfo.getEmail();
+
+        //우리 db 에서 회원 id 와 패스워드. 회원 id == 카카오 nickname
+        String username = nickname;
+        //패스워드 == 카카오 id + admin token  //==비밀번호 저장 방법 찾기==//
+        String password = kakaoId + ADMIN_TOKEN;
+
+        // DB에 중복된 Kakao Id 가 있는지 확인
+        User kakaoUser = userRepository.findByKakaoId(kakaoId)
+                .orElse(null);
+
+        //카카오 정보로 회원가입
+        if (kakaoUser == null) {
+            //패스워드 인코딩
+            String encodedPassword = passwordEncoder.encode(password);
+            // ROLE = 사용자
+            Authority authority = Authority.ROLE_USER;
+
+            //오류 고칠 것==========================//
+            kakaoUser = new User(nickname, encodedPassword, email, role, kakaoId);
+            userRepository.save(kakaoUser);
+        }
+
+        //로그인 처리
+        Authentication kakaoUsernamePassword = new UsernamePasswordAuthenticationToken(username, password);
+        Authentication authentication = authenticationManager.authenticate(kakaoUsernamePassword);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+
+    }
+
+}
+
+
+
+        }
 
     //== 체크 메서드 ==//
 //    public void isAvailable(String email) {

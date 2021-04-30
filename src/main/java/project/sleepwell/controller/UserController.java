@@ -45,23 +45,22 @@ public class UserController {
 
     //callback 받는 URI
     /**
+     * 프론트에서 로그인 요청(oauth/authorize?) -> 로그인 후 동의 ->
      * 카카오 Authorization Server 는 이 uri 에 code 값을 넘겨줄 것이다.
+     * code 값으로 token 요청
      */
     @RequestMapping("/kakaoLogin")  //get mapping
     public String kakaoLogin(@RequestParam String code) {
 
         String access_Token = kakaoService.getAccessToken(code);
         System.out.println("######" + code);
+        System.out.println("access_token: " + access_Token);
 
-        HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_Token);
-        System.out.println("login Controller = " + userInfo);
+//        HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_Token);
+//        System.out.println("login Controller = " + userInfo);
 
-        //세션은 안쓸 거니까 날리고.
-        //클라이언트의 이메일이 존재할 때 세션에 해당 이메일과 토큰 등록
-//        if (userInfo.get("email") != null) {
-//            session.setAttribute("userId", userInfo.get("email"));
-//            session.setAttribute("access_Token", access_Token);
-//        }
+        userService.kakaoLogin(code);
+
 
         return "kakao login test.";
     }

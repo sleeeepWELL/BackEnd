@@ -3,6 +3,7 @@ package project.sleepwell.config;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
@@ -37,6 +38,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+    //kakao login
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
     //h2 console 로 테스트 할 것
 //    @Override
 //    public void configure(WebSecurity web) throws Exception {
@@ -50,7 +58,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.headers().frameOptions().disable();    //sameOrigin 은 왜 안먹히냐고 아오 진짜. 1시간 날림
         http.authorizeRequests()
                 .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/api/login").permitAll();
+                .antMatchers("/api/login").permitAll()
+                .antMatchers("/kakaoLogin").permitAll();
+
 
         http
                 //핸들러 등록해놓기

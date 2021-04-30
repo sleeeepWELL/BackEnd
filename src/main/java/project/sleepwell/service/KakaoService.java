@@ -16,9 +16,13 @@ import java.util.HashMap;
 
 
 //인증 코드로 access token 받아올 메서드 작성
+
+/**
+ * https://kauth.kakao.com/oauth/token 경로로 필수 요구 파라미터를 POST 방식으로 요청해라.
+ */
 @Slf4j
 @Service
-public class KakaoService {
+public class KakaoService {     //KakaoAPI
 
     public String getAccessToken(String authorize_code) {
         //테스트 후 카멜로 바꾸기
@@ -38,7 +42,7 @@ public class KakaoService {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream()));
             StringBuilder sb = new StringBuilder();
             sb.append("grant_type=authorization_code");
-            sb.append("&client_id=3982623969b121595a2e4fff200e265e");
+            sb.append("&client_id=클라이언트 아이디");
             sb.append("&redirect_uri=http://localhost:8080/kakaoLogin");
             sb.append("&code=" + authorize_code);
             bw.write(sb.toString());

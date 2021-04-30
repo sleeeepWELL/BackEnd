@@ -15,4 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     //custom service
     Optional<User> findByUsername(String username);
+
+    //kakao login
+    Optional<User> findByKakaoId(Long kakaoId);
 }
