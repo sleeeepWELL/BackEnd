@@ -53,6 +53,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.cors();
         http.csrf().disable();
         http.headers().frameOptions().disable();    //sameOrigin 은 왜 안먹히냐고 아오 진짜. 1시간 날림
         http.authorizeRequests()

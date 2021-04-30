@@ -95,12 +95,12 @@ public class UserService {
         Authentication authentication = jwtTokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
 
         //refresh Token 가져오기
-        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
+        RefreshToken refreshToken = refreshTokenRepository.findByRefreshKey(authentication.getName())
                 .orElseThrow(
                         () -> new RuntimeException("로그아웃 한 사용자 입니다.")
                 );
         //일치 여부 검사
-        if (!refreshToken.getValue().equals(tokenRequestDto.getRefreshToken())) {
+        if (!refreshToken.getRefreshValue().equals(tokenRequestDto.getRefreshToken())) {
             throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
         }
 
