@@ -26,7 +26,6 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
-
     /**
      * create user
      * email, username, password, passwordCheck

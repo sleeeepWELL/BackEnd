@@ -28,6 +28,8 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Authority authority;
 
+    private Long kakaoId;
+
     @Builder
     public User(String username, String email, String password, Authority authority) {
         this.username = username;

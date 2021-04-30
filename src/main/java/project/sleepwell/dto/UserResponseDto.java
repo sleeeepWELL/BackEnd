@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.sleepwell.domain.User;
 
+//response 는 안쓴다.
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
