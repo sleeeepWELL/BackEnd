@@ -37,7 +37,7 @@ public class KakaoOAuth2 {
         //HttpBody 오브젝트 생성
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-        params.add("client_id", "3982623969b121595a2e4fff200e265e");        //==클라이언트 아이디===============//
+        params.add("client_id", "");        //==클라이언트 아이디===============//
         params.add("redirect_url", "http://localhost:8080/kakaoLogin");
         params.add("code", authorizedCode);
 
