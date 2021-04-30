@@ -1,4 +1,4 @@
-package project.sleepwell.domain;
+package project.sleepwell.domain.refreshtoken;
 
 import lombok.Builder;
 import lombok.Getter;

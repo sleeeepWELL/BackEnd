@@ -1,4 +1,4 @@
-package project.sleepwell.service.cards;
+package project.sleepwell.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class CardsService {
     @Transactional
     public String update(LocalDate selectedAt, CardsRequestDto requestDto){
         Cards cards = cardsRepository.findBySelectedAt(selectedAt).orElseThrow(
-                () -> new IllegalArgumentException(""+selectedAt)
+                () -> new IllegalArgumentException("{\"selectedAt\":"+selectedAt+"}")
         );
         cards.update(requestDto.getStartSleep(), requestDto.getEndSleep(),
                 requestDto.getTag(), requestDto.getCondition(), requestDto.getMemo(), requestDto.getSelectedAt());
@@ -39,7 +39,7 @@ public class CardsService {
     //상세조회
     public CardsResponseDto findBySelectedAt(LocalDate selectedAt) {
         Cards entity = cardsRepository.findBySelectedAt(selectedAt).orElseThrow(
-                () -> new IllegalArgumentException("" + selectedAt)
+                () -> new IllegalArgumentException("{\"selectedAt\":"+selectedAt+"}")
         );
         return new CardsResponseDto(entity);
     }
@@ -54,7 +54,7 @@ public class CardsService {
     @Transactional
     public String delete(LocalDate selectedAt) {
         Cards cards = cardsRepository.findBySelectedAt(selectedAt).orElseThrow(
-                () -> new IllegalArgumentException("" + selectedAt)
+                () -> new IllegalArgumentException("{\"selectedAt\":"+selectedAt+"}")
         );
         cardsRepository.delete(cards);
         return "ok";

@@ -12,7 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import project.sleepwell.dto.TokenDto;
+import project.sleepwell.web.dto.TokenDto;
 
 import java.security.Key;
 import java.util.Arrays;

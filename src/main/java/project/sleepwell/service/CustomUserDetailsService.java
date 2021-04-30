@@ -7,8 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import project.sleepwell.domain.User;
-import project.sleepwell.repository.UserRepository;
+import project.sleepwell.domain.user.User;
+import project.sleepwell.domain.user.UserRepository;
 
 import java.util.Collections;
 import java.util.Optional;

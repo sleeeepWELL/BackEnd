@@ -1,7 +1,6 @@
-package project.sleepwell.repository;
+package project.sleepwell.domain.user;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import project.sleepwell.domain.User;
 
 import java.util.Optional;
 
