@@ -6,6 +6,8 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +25,8 @@ import project.sleepwell.kakaologin.KakaoOAuth2;
 import project.sleepwell.kakaologin.KakaoUserInfo;
 import project.sleepwell.domain.refreshtoken.RefreshTokenRepository;
 import project.sleepwell.domain.user.UserRepository;
+
+import java.util.Collections;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -66,6 +70,7 @@ public class UserService {
         UsernamePasswordAuthenticationToken authenticationToken = loginDto.toAuthentication();
 
         //authentication = id, password(검증된), authority
+        //authentication = username, password(검증된), authority
         //== principal, credential, authority
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
@@ -78,7 +83,7 @@ public class UserService {
                 .value(tokenDto.getRefreshToken())
                 .build();
 
-        refreshTokenRepository.save(refreshToken);  //key, value
+        refreshTokenRepository.save(refreshToken);  //key, value (String 으로 변경, db 오류?)
 
         //토큰 발급
         return tokenDto;
@@ -131,7 +136,7 @@ public class UserService {
         String nickname = userInfo.getNickname();
         String email = userInfo.getEmail();
 
-        //우리 db 에서 회원 id 와 패스워드. 회원 id == 카카오 nickname
+        //우리 db 에서 회원 id 와 패스워드. 회원 id(String) == 카카오 nickname
         String username = nickname;
         //패스워드 == 카카오 id + admin token  //==비밀번호 저장 방법 찾기==//
         String password = kakaoId + ADMIN_TOKEN;
@@ -149,19 +154,25 @@ public class UserService {
 
             //오류 고칠 것==========================//
             kakaoUser = new User(username, encodedPassword, email, authority, kakaoId);
-            log.info("kakao user = {}", kakaoUser);
+            log.info("kakao user = {}", kakaoUser);     //정상적으로 저장이 될테고
             userRepository.save(kakaoUser);
         }
 
-        //로그인 처리
+        //스프링 시큐리티를 통해 로그인 처리
         //카카오 유저도 email, password 로 매핑 할까..
-        Authentication kakaoUsernamePassword = new UsernamePasswordAuthenticationToken(username, password);
-        Authentication authentication = authenticationManager.authenticate(kakaoUsernamePassword);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        //카카오 유저 == 나의 유저를 시큐리티 유저와 매핑 시켜야 해 ( User kakaoUser )
+        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(kakaoUser.getAuthority().toString());
+        UserDetails principal = new org.springframework.security.core.userdetails.User(
+                kakaoUser.getUsername(),
+                kakaoUser.getPassword(),
+                Collections.singleton(grantedAuthority));
 
-//        UserDetails principal =
-//                new org.springframework.security.core.userdetails.User(
-//                        String.valueOf(kakaoUser.getId()), "", kakaoUser.getAuthority());
+        Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, principal.getAuthorities());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        //프론트로 토큰 넘겨주기
+//        jwtTokenProvider.
+
+
 
 
     }
