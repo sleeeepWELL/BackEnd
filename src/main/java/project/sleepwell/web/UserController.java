@@ -3,24 +3,37 @@ package project.sleepwell.web;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import project.sleepwell.domain.user.User;
+import project.sleepwell.domain.user.UserRepository;
 import project.sleepwell.kakaologin.KakaoOAuth2;
-import project.sleepwell.service.KakaoService;
+import project.sleepwell.kakaologin.KakaoAPI;
 import project.sleepwell.service.UserService;
+import project.sleepwell.util.SecurityUtil;
 import project.sleepwell.web.dto.LoginDto;
 import project.sleepwell.web.dto.SignupRequestDto;
 import project.sleepwell.web.dto.TokenDto;
 import project.sleepwell.web.dto.TokenRequestDto;
 
 import javax.validation.Valid;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
 public class UserController {
 
     private final UserService userService;
-    private final KakaoService kakaoService;
+    private final KakaoAPI kakaoService;
     private final KakaoOAuth2 kakaoOAuth2;
+    private final UserRepository userRepository;
 
+
+    //현재 로그인 하고 들어온 유저의 정보 뽑기 (테스트용. 개발자용) -> 성공
+    @GetMapping("/test/users")
+    public  User getUserInfo() {
+        Long userId = SecurityUtil.getCurrentUserId();
+        User user = userRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("nothing"));
+        return user;
+    }
 
     @GetMapping("/test")
     public String test() {
@@ -52,18 +65,7 @@ public class UserController {
      */
     @RequestMapping("/kakaoLogin")  //get mapping
     public String kakaoLogin(@RequestParam String code) {
-
-////        String access_Token = kakaoService.getAccessToken(code);
-//        String access_Token = kakaoOAuth2.getAccessToken(code);
-//        System.out.println("######" + code);
-//        System.out.println("access_token: " + access_Token);
-//
-////        HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_Token);
-////        System.out.println("login Controller = " + userInfo);
-
         userService.kakaoLogin(code);
-
-
         return "kakao login: success.";
     }
 

@@ -11,7 +11,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 
 /**
- * kakao login - 토큰 가져오는 방법 2
+ * authorize_code 로 카카오 서버에 access token 받아올 메서드
+ * 방법 1. HTTP header, body 이용
  */
 @Component
 public class KakaoOAuth2 {
@@ -36,7 +37,8 @@ public class KakaoOAuth2 {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", "");        //==클라이언트 아이디===============//
-        params.add("redirect_url", "http://localhost:8080/kakaoLogin");
+//        params.add("redirect_url", "http://localhost:8080/kakaoLogin");
+        params.add("redirect_url", "http://54.180.79.156/kakaoLogin");
         params.add("code", authorizedCode);
 
         //HttpHeader 와 HttpBody 를 하나의 오브젝트에 담기

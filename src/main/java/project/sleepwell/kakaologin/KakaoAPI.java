@@ -1,4 +1,4 @@
-package project.sleepwell.service;
+package project.sleepwell.kakaologin;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -15,11 +15,13 @@ import java.util.HashMap;
 //인증 코드로 access token 받아올 메서드 작성
 
 /**
+ * authorize_code 로 카카오 서버에 access token 받아올 메서드
+ * 방법 1. URL, HttpURLConnection 이용
  * https://kauth.kakao.com/oauth/token 경로로 필수 요구 파라미터를 POST 방식으로 요청해라.
  */
 @Slf4j
 @Service
-public class KakaoService {     //KakaoAPI
+public class KakaoAPI {     //KakaoAPI
 
     public String getAccessToken(String authorize_code) {
         //테스트 후 카멜로 바꾸기
