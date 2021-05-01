@@ -2,6 +2,7 @@ package project.sleepwell.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import project.sleepwell.domain.user.User;
 import project.sleepwell.domain.user.UserRepository;
@@ -26,14 +27,24 @@ public class UserController {
     private final KakaoOAuth2 kakaoOAuth2;
     private final UserRepository userRepository;
 
-
+    ////////////////////////////
     //현재 로그인 하고 들어온 유저의 정보 뽑기 (테스트용. 개발자용) -> 성공
     @GetMapping("/test/users")
-    public  User getUserInfo() {
+    public User getUserInfo() {
         Long userId = SecurityUtil.getCurrentUserId();
         User user = userRepository.findById(userId).orElseThrow(()-> new IllegalArgumentException("nothing"));
         return user;
     }
+
+    @GetMapping("/test/authentication/test")
+    public User authTest(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
+        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("There is nobody by that name.")
+        );
+
+        return user;
+    }
+
 
     @GetMapping("/test")
     public String test() {

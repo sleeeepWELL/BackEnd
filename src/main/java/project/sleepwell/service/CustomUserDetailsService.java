@@ -25,16 +25,16 @@ public class CustomUserDetailsService implements UserDetailsService {
     /**
      * username == email (LoginDto 에서 로그인 한 회원의 username 을 email 로 바꿔서 생성하게 만듦.)
      * -> new UsernamePasswordAuthenticationToken(email, password);
-     * @param username
+     * @param email
      * @return
      * @throws UsernameNotFoundException
      */
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         //사실상 loadUserByEmail
-        log.info("loadUserByUserName.String username = {}", username);
-        Optional<User> user = userRepository.findByEmail(username);
+        log.info("loadUserByUserName.String username = {}", email);
+        Optional<User> user = userRepository.findByEmail(email);
 
         return user.map(this::principalDetails)
                     .orElseThrow(() -> new UsernameNotFoundException("데이터베이스에서 찾을 수 없습니다."));
@@ -54,8 +54,8 @@ public class CustomUserDetailsService implements UserDetailsService {
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(user.getAuthority().toString());
 
         return new org.springframework.security.core.userdetails.User(
-//                user.getUsername(),
-                String.valueOf(user.getId()),
+                user.getUsername(),
+//                String.valueOf(user.getId()),
                 user.getPassword(),
                 Collections.singleton(grantedAuthority)
         );
