@@ -30,7 +30,7 @@ public class CardsService {
                 () -> new IllegalArgumentException("{\"selectedAt\":"+selectedAt+"}")
         );
         cards.update(requestDto.toEntity().getUser(), requestDto.getStartSleep(), requestDto.getEndSleep(),
-                requestDto.getTag(), requestDto.getCondition(), requestDto.getMemo(), requestDto.getSelectedAt());
+                requestDto.getTag(), requestDto.getConditions(), requestDto.getMemo(), requestDto.getSelectedAt());
 
         return "ok";
     }

@@ -19,7 +19,7 @@ public class CardsRequestDto {
     @JsonFormat(pattern = "HH:mm")
     private LocalTime endSleep;
     private List<String> tag;
-    private Long condition;
+    private Long conditions;
     private String memo;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate selectedAt;
@@ -27,11 +27,11 @@ public class CardsRequestDto {
 
     //save,update dto
     @Builder
-    public CardsRequestDto(LocalTime startSleep, LocalTime endSleep, List<String> tag, Long condition, String memo, LocalDate selectedAt) {
+    public CardsRequestDto(LocalTime startSleep, LocalTime endSleep, List<String> tag, Long conditions, String memo, LocalDate selectedAt) {
         this.startSleep = startSleep;
         this.endSleep = endSleep;
         this.tag = tag;
-        this.condition = condition;
+        this.conditions = conditions;
         this.memo = memo;
         this.selectedAt = selectedAt;
     }
@@ -41,7 +41,7 @@ public class CardsRequestDto {
                 .startSleep(startSleep)
                 .endSleep(endSleep)
                 .tag(tag)
-                .condition(condition)
+                .conditions(conditions)
                 .memo(memo)
                 .selectedAt(selectedAt)
                 .build();
