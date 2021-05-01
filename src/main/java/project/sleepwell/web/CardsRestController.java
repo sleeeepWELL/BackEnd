@@ -3,7 +3,9 @@ package project.sleepwell.web;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
+import project.sleepwell.domain.cards.Cards;
 import project.sleepwell.service.CardsService;
+import project.sleepwell.util.SecurityUtil;
 import project.sleepwell.web.dto.CardsRequestDto;
 import project.sleepwell.web.dto.CardsResponseDto;
 
@@ -21,11 +23,18 @@ public class CardsRestController {
 
     private final CardsService cardsService;
 
+//    //전체 조회
+//    @GetMapping("/calendars")
+//    public List<CardsResponseDto> findAll(){
+//        return cardsService.findAll();
+//    }
+
     //전체 조회
     @GetMapping("/calendars")
-    public List<CardsResponseDto> findAll(){
-        return cardsService.findAll();
-    }
+    public List<Cards> findByUserId(){
+        Long userId = SecurityUtil.getCurrentUserId();
+        return cardsService.findByUserId(userId);
+}
 
     //게시
     @PostMapping("/cards")

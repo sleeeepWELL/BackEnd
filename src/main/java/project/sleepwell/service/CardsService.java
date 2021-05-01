@@ -10,7 +10,6 @@ import project.sleepwell.web.dto.CardsResponseDto;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -30,7 +29,7 @@ public class CardsService {
         Cards cards = cardsRepository.findBySelectedAt(selectedAt).orElseThrow(
                 () -> new IllegalArgumentException("{\"selectedAt\":"+selectedAt+"}")
         );
-        cards.update(requestDto.getStartSleep(), requestDto.getEndSleep(),
+        cards.update(requestDto.toEntity().getUser(), requestDto.getStartSleep(), requestDto.getEndSleep(),
                 requestDto.getTag(), requestDto.getCondition(), requestDto.getMemo(), requestDto.getSelectedAt());
 
         return "ok";
@@ -45,9 +44,11 @@ public class CardsService {
     }
 
     //전체조회
-    public List<CardsResponseDto> findAll() {
-        return cardsRepository.findAll().stream().map(CardsResponseDto::new)
-                .collect(Collectors.toList());
+    public List<Cards> findByUserId(Long userId) {
+        List<Cards> findAllCards = cardsRepository.findByUserId(userId);
+//        return cardsRepository.findAll().stream().map(CardsResponseDto::new)
+//                .collect(Collectors.toList());
+        return findAllCards;
     }
 
     //삭제

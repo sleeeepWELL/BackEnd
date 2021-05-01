@@ -11,7 +11,9 @@ import java.util.Optional;
 // 확장하게되어 도메인 별 프로젝트를 분리해야 할 때가 오면 Entity 와 Repository 는 같이 움직어야 하므로 도메인 패키지에서 함께 관리
 public interface CardsRepository extends JpaRepository<Cards, Long> { // <Entity Class, PK type> -> 기본적인 CRUD 메서드 자동으로 생성
 
-    List<Cards> findAll();
+    List<Cards> findByUserId(Long user_id);
+
+//    List<Cards> findAll();
 
     Optional<Cards> findBySelectedAt(LocalDate selectedAt);
 }
