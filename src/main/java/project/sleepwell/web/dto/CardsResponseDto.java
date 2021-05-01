@@ -20,7 +20,7 @@ public class CardsResponseDto {
     private Long totalSleepHour;
     private Long totalSleepMinute;
     private List<String> tag;
-    private Long condition;
+    private Long conditions;
     private String memo;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate selectedAt;
@@ -33,7 +33,7 @@ public class CardsResponseDto {
         this.totalSleepHour = entity.getTotalSleepHour();
         this.totalSleepMinute = entity.getTotalSleepMinute();
         this.tag = entity.getTag();
-        this.condition = entity.getCondition();
+        this.conditions = entity.getConditions();
         this.memo = entity.getMemo();
         this.selectedAt = entity.getSelectedAt();
     }

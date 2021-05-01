@@ -39,7 +39,7 @@ public class Cards{
     private List<String> tag;
 
     @Column(nullable = false)
-    private Long condition;
+    private Long conditions;
 
     @Column
     private String memo;
@@ -49,7 +49,7 @@ public class Cards{
 
     // 생성자 대신에 @Builder를 통해 빌더 클래스를 사용 -> 지금 채워야할 필드의 역할이 무엇인지 정확히 지정
     @Builder
-    public Cards(User user, LocalTime startSleep, LocalTime endSleep, List<String> tag , Long condition, String memo, LocalDate selectedAt) {
+    public Cards(User user, LocalTime startSleep, LocalTime endSleep, List<String> tag , Long conditions, String memo, LocalDate selectedAt) {
         this.user = user;
         this.startSleep = startSleep;
         this.endSleep = endSleep;
@@ -62,12 +62,12 @@ public class Cards{
             this.totalSleepHour = this.totalSleepHour + 23L;
         }
         this.selectedAt = selectedAt;
-        this.condition = condition;
+        this.conditions = conditions;
         this.tag = tag;
         this.memo = memo;
     }
 
-    public void update(User user, LocalTime startSleep, LocalTime endSleep, List<String> tag ,Long condition, String memo, LocalDate selectedAt){
+    public void update(User user, LocalTime startSleep, LocalTime endSleep, List<String> tag ,Long conditions, String memo, LocalDate selectedAt){
         this.user = user;
         this.startSleep = startSleep;
         this.endSleep = endSleep;
@@ -80,7 +80,7 @@ public class Cards{
             this.totalSleepHour = this.totalSleepHour + 23L;
         }
         this.selectedAt = selectedAt;
-        this.condition = condition;
+        this.conditions = conditions;
         this.tag = tag;
         this.memo = memo;
     }
