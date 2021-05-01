@@ -39,6 +39,7 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
+    //authentication = principal, credential, authority
     //유저 정보 넘겨받아서 Access Token + Refresh Token 만들기
     public TokenDto generateTokenDto(Authentication authentication) {
         //권한 가져오기 (USER, ADMIN)
@@ -47,11 +48,11 @@ public class JwtTokenProvider {
 
         long now = (new Date()).getTime();
 
-        //Access Token  **getName 에 userId (custom 에서 설정) =====//
+        //Access Token  **getName 에 userId -> username (custom 에서 설정) =====//
         //유저 정보와 권한 정보 담기
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);   //현재 시간 + 30분간
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())       //"sub" : "id(String)"
+                .setSubject(authentication.getName())       //"sub" : "id(String)" -> username
                 .claim(AUTHORITIES_KEY, authorities)        //"auth" : "ROLE_USER"
                 .setExpiration(accessTokenExpiresIn)        //"exp":"now + 30m"
                 .signWith(key, SignatureAlgorithm.HS512)    //"alg":"HS512"

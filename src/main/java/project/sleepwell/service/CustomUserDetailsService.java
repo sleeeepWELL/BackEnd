@@ -38,7 +38,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return user.map(this::principalDetails)
                     .orElseThrow(() -> new UsernameNotFoundException("데이터베이스에서 찾을 수 없습니다."));
-        //id, password, authority 를 갖고 있는 user
+        //id -> username, password, authority 를 갖고 있는 user
     }
 
     /**

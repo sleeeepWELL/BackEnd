@@ -59,6 +59,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/api/login").permitAll()
+                .antMatchers("/api/login/code").permitAll()     //응답 코드 테스트용
                 .antMatchers("/kakaoLogin").permitAll();
 
 
