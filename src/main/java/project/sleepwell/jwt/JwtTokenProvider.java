@@ -41,17 +41,17 @@ public class JwtTokenProvider {
 
     //유저 정보 넘겨받아서 Access Token + Refresh Token 만들기
     public TokenDto generateTokenDto(Authentication authentication) {
-        //권한 가져오기
+        //권한 가져오기 (USER, ADMIN)
         String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
 
-        //Access Token  **getName 에 userId (securityUtil 에서 설정) =====//
+        //Access Token  **getName 에 userId (custom 에서 설정) =====//
         //유저 정보와 권한 정보 담기
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);   //현재 시간 + 30분간
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())
+                .setSubject(authentication.getName())       //"sub" : "id(String)"
                 .claim(AUTHORITIES_KEY, authorities)        //"auth" : "ROLE_USER"
                 .setExpiration(accessTokenExpiresIn)        //"exp":"now + 30m"
                 .signWith(key, SignatureAlgorithm.HS512)    //"alg":"HS512"
@@ -117,7 +117,16 @@ public class JwtTokenProvider {
     //변환 하기
     private Claims parseClaims(String accessToken) {
         try {
-            return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
+            //token 을 이용해서 claims 만들기
+            Claims claims = Jwts
+                    .parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(accessToken)
+                    .getBody();
+
+            return claims;
+
         } catch (ExpiredJwtException e) {
             return e.getClaims();
         }

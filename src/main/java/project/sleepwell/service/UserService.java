@@ -1,6 +1,7 @@
 package project.sleepwell.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,6 +24,7 @@ import project.sleepwell.kakaologin.KakaoUserInfo;
 import project.sleepwell.domain.refreshtoken.RefreshTokenRepository;
 import project.sleepwell.domain.user.UserRepository;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -30,7 +32,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;    //비밀번호 검증
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -42,7 +44,9 @@ public class UserService {
      * create user
      * email, username, password, passwordCheck
      */
+    @Transactional
     public Long createUser(SignupRequestDto signupRequestDto) {
+        //따로 메서드로 빼도 됨
         if (userRepository.existsByEmail(signupRequestDto.getEmail())) {
             throw new RuntimeException("이미 사용 중인 이메일 입니다.");
         }
@@ -61,11 +65,12 @@ public class UserService {
         //email, password 를 인자로 받아서 authenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = loginDto.toAuthentication();
 
-        //
+        //authentication = id, password(검증된), authority
+        //== principal, credential, authority
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
 
         //토큰 만들기
-        TokenDto tokenDto = jwtTokenProvider.generateTokenDto(authentication);
+        TokenDto tokenDto = jwtTokenProvider.generateTokenDto(authentication);  //====//
 
         //refresh token 저장
         RefreshToken refreshToken = RefreshToken.builder()
@@ -115,12 +120,12 @@ public class UserService {
         //토큰 발급
         return tokenDto;
 
-
     }
 
     //kakao
     public void kakaoLogin(String code) {
         //카카오 OAuth2 를 통해 카카오 사용자 정보 조회
+        //kakao user info : id, email, nickname
         KakaoUserInfo userInfo = kakaoOAuth2.getUserInfo(code);
         Long kakaoId = userInfo.getId();
         String nickname = userInfo.getNickname();
@@ -144,14 +149,19 @@ public class UserService {
 
             //오류 고칠 것==========================//
             kakaoUser = new User(username, encodedPassword, email, authority, kakaoId);
+            log.info("kakao user = {}", kakaoUser);
             userRepository.save(kakaoUser);
         }
 
         //로그인 처리
-
+        //카카오 유저도 email, password 로 매핑 할까..
         Authentication kakaoUsernamePassword = new UsernamePasswordAuthenticationToken(username, password);
         Authentication authentication = authenticationManager.authenticate(kakaoUsernamePassword);
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+//        UserDetails principal =
+//                new org.springframework.security.core.userdetails.User(
+//                        String.valueOf(kakaoUser.getId()), "", kakaoUser.getAuthority());
 
 
     }
