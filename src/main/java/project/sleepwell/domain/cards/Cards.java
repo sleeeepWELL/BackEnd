@@ -1,9 +1,11 @@
 package project.sleepwell.domain.cards;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.sleepwell.domain.user.User;
+import project.sleepwell.web.dto.CardsRequestDto;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -21,6 +23,7 @@ public class Cards{
     private Long id;
 
     @ManyToOne
+    @JsonBackReference
     private User user;
 
     @Column(nullable = false)
@@ -84,4 +87,18 @@ public class Cards{
         this.tag = tag;
         this.memo = memo;
     }
+
+
+
+    //테스트 좀 해보겠습니다.
+    public Cards(CardsRequestDto requestDto, User user) {
+        this.startSleep = requestDto.getStartSleep();
+        this.endSleep = requestDto.getEndSleep();
+        this.tag = requestDto.getTag();
+        this.conditions = requestDto.getConditions();
+        this.memo = requestDto.getMemo();
+        this.selectedAt = requestDto.getSelectedAt();
+        this.user = user;
+    }
+
 }

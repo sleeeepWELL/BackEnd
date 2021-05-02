@@ -1,5 +1,6 @@
 package project.sleepwell.domain.user;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,6 +20,7 @@ public class User {
     private Long id;
 
     @OneToMany(mappedBy = "user")
+    @JsonManagedReference
     private List<Cards> cards = new ArrayList<>();
 
     private String username;    //nickname 처럼 활용
