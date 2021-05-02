@@ -7,22 +7,21 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import project.sleepwell.domain.cards.Cards;
 import project.sleepwell.domain.user.Message;
 import project.sleepwell.domain.user.StatusEnum;
 import project.sleepwell.domain.user.User;
 import project.sleepwell.domain.user.UserRepository;
-import project.sleepwell.kakaologin.KakaoOAuth2;
 import project.sleepwell.kakaologin.KakaoAPI;
+import project.sleepwell.kakaologin.KakaoOAuth2;
 import project.sleepwell.service.UserService;
 import project.sleepwell.util.SecurityUtil;
-import project.sleepwell.web.dto.*;
+import project.sleepwell.web.dto.LoginDto;
+import project.sleepwell.web.dto.SignupRequestDto;
+import project.sleepwell.web.dto.TokenDto;
+import project.sleepwell.web.dto.TokenRequestDto;
 
 import javax.validation.Valid;
 import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController
@@ -50,7 +49,6 @@ public class UserController {
 
         return user;
     }
-
 
     @GetMapping("/test")
     public String test() {
@@ -115,17 +113,6 @@ public class UserController {
     public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
         return ResponseEntity.ok(userService.reissue(tokenRequestDto));
     }
-
-    @GetMapping("/myCalendars") //토큰 실어서 테스트 -> 실패? -> 성공
-    public Map<String, Object> getMyCalendars(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-        return userService.getMyCalendars(principal);   //calendarInfo 반환하게
-    }
-
-    @PostMapping("/api/cards")
-    public Long createCard(@RequestBody CardsRequestDto requestDto, @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-        return userService.createCard(requestDto, principal);
-    }
-
 
 
 //    @GetMapping("/mypage")

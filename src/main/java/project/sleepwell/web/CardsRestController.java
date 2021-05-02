@@ -2,15 +2,15 @@ package project.sleepwell.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import project.sleepwell.domain.cards.Cards;
 import project.sleepwell.service.CardsService;
-import project.sleepwell.util.SecurityUtil;
 import project.sleepwell.web.dto.CardsRequestDto;
 import project.sleepwell.web.dto.CardsResponseDto;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -23,29 +23,28 @@ public class CardsRestController {
 
     private final CardsService cardsService;
 
-//    //전체 조회
-//    @GetMapping("/calendars")
-//    public List<CardsResponseDto> findAll(){
-//        return cardsService.findAll();
-//    }
+    //전체 조회(관리자용..? 모든 카드 조회 - 혹시 몰라서 남겨둠.)
+    @GetMapping("/allCalendars")
+    public List<CardsResponseDto> findAll(){
+        return cardsService.findAll();
+    }
 
-    //전체 조회
+    //내 캘린더 조회
     @GetMapping("/calendars")
-    public List<Cards> findByUserId(){
-        Long userId = SecurityUtil.getCurrentUserId();
-        return cardsService.findByUserId(userId);
-}
+    public Map<String, Object> getMyCalendars(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
+        return cardsService.getMyCalendars(principal);   //calendarInfo 반환하게
+    }
 
-    //게시
+    //카드 작성
     @PostMapping("/cards")
-    public String save(@RequestBody CardsRequestDto requestDto) {
-        return cardsService.save(requestDto);
+    public Long createCard(@RequestBody CardsRequestDto requestDto, @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
+        return cardsService.createCard(requestDto, principal);
     }
 
     //수정
     @PutMapping("/cards/{selectedAt}")
-    public String update(@PathVariable("selectedAt") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate selectedAt, @RequestBody CardsRequestDto requestDto) {
-        return cardsService.update(selectedAt,requestDto);
+    public String update(@PathVariable("selectedAt") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate selectedAt, @RequestBody CardsRequestDto requestDto, @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
+        return cardsService.update(selectedAt,requestDto,principal);
     }
 
     //상세 조회

@@ -13,20 +13,21 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import project.sleepwell.domain.cards.Cards;
 import project.sleepwell.domain.cards.CardsRepository;
-import project.sleepwell.domain.user.Authority;
 import project.sleepwell.domain.refreshtoken.RefreshToken;
+import project.sleepwell.domain.refreshtoken.RefreshTokenRepository;
+import project.sleepwell.domain.user.Authority;
 import project.sleepwell.domain.user.User;
-import project.sleepwell.web.dto.*;
+import project.sleepwell.domain.user.UserRepository;
 import project.sleepwell.jwt.JwtTokenProvider;
 import project.sleepwell.kakaologin.KakaoOAuth2;
 import project.sleepwell.kakaologin.KakaoUserInfo;
-import project.sleepwell.domain.refreshtoken.RefreshTokenRepository;
-import project.sleepwell.domain.user.UserRepository;
+import project.sleepwell.web.dto.LoginDto;
+import project.sleepwell.web.dto.SignupRequestDto;
+import project.sleepwell.web.dto.TokenDto;
+import project.sleepwell.web.dto.TokenRequestDto;
 
-import javax.smartcardio.Card;
-import java.util.*;
+import java.util.Collections;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -186,43 +187,7 @@ public class UserService {
         //프론트에 응답 코드 주기 (tokenDto 넘기면서) -> controller 가서 해야 할 듯
         return tokenDto;
 
-
-
-
-
     }
-
-    //내가 작성한 캘린더(카드들) 다 조회하기
-    public Map<String,Object> getMyCalendars(org.springframework.security.core.userdetails.User principal) {
-        Map<String, Object> calendarInfo = new LinkedHashMap<>();
-
-        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("nothing")
-        );
-        List<Cards> cards = user.getCards();
-
-        calendarInfo.put("userId", user.getId());
-        calendarInfo.put("cards", cards);
-
-//        List<Cards> cards = cardRepository.findByUserId(user.getId());
-//        List<Cards> cards = user.get().getCards();
-        return calendarInfo;
-
-
-    }
-
-    //카드 만들기
-    public Long createCard(CardsRequestDto requestDto, org.springframework.security.core.userdetails.User principal) {
-        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("nothing")
-        );
-        Cards card = new Cards(requestDto, user);
-        cardRepository.save(card);
-
-        return card.getId();
-
-    }
-
 
     //== 체크 메서드 ==//
 //    public void isAvailable(String email) {
@@ -230,8 +195,6 @@ public class UserService {
 //            throw new IllegalArgumentException("이미 사용 중인 이메일 입니다.");
 //        }
 //    }
-
-
 
     //처음부터 인자로 email 을 받아서 유저 정보를 찾고, email 다시 반환
 //    @Transactional(readOnly = true)
@@ -252,7 +215,5 @@ public class UserService {
 //                        () -> new RuntimeException("로그인 한 유저의 정보가 존재하지 않습니다.")
 //                );
 //    }
-
-
 
 }   //닫는 최종 괄호

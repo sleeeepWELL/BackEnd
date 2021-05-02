@@ -1,10 +1,8 @@
 package project.sleepwell.web.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import project.sleepwell.domain.cards.Cards;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -24,27 +22,15 @@ public class CardsRequestDto {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate selectedAt;
 
-
-    //save,update dto
-    @Builder
-    public CardsRequestDto(LocalTime startSleep, LocalTime endSleep, List<String> tag, Long conditions, String memo, LocalDate selectedAt) {
-        this.startSleep = startSleep;
-        this.endSleep = endSleep;
-        this.tag = tag;
-        this.conditions = conditions;
-        this.memo = memo;
-        this.selectedAt = selectedAt;
-    }
-
-    public Cards toEntity() {
-        return Cards.builder()
-                .startSleep(startSleep)
-                .endSleep(endSleep)
-                .tag(tag)
-                .conditions(conditions)
-                .memo(memo)
-                .selectedAt(selectedAt)
-                .build();
-    }
+//    //save,update dto
+//    @Builder
+//    public CardsRequestDto(LocalTime startSleep, LocalTime endSleep, List<String> tag, Long conditions, String memo, LocalDate selectedAt) {
+//        this.startSleep = startSleep;
+//        this.endSleep = endSleep;
+//        this.tag = tag;
+//        this.conditions = conditions;
+//        this.memo = memo;
+//        this.selectedAt = selectedAt;
+//    }
 
 }

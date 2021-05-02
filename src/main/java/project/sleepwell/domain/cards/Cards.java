@@ -1,7 +1,6 @@
 package project.sleepwell.domain.cards;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.sleepwell.domain.user.User;
@@ -50,55 +49,41 @@ public class Cards{
     @Column
     private LocalDate selectedAt;
 
-    // 생성자 대신에 @Builder를 통해 빌더 클래스를 사용 -> 지금 채워야할 필드의 역할이 무엇인지 정확히 지정
-    @Builder
-    public Cards(User user, LocalTime startSleep, LocalTime endSleep, List<String> tag , Long conditions, String memo, LocalDate selectedAt) {
-        this.user = user;
-        this.startSleep = startSleep;
-        this.endSleep = endSleep;
-        this.totalSleepMinute = ChronoUnit.MINUTES.between(startSleep, endSleep)%60; // 기상시간 - 취침시간 % 60
-        if (this.totalSleepMinute < 0) { // 음수이면
-            this.totalSleepMinute = this.totalSleepMinute + 60L;
-        }
-        this.totalSleepHour = ChronoUnit.MINUTES.between(startSleep, endSleep)/60; // 기상시간 - 취침시간 / 60
-        if (this.totalSleepHour <= 0) { // 음수, 0이면
-            this.totalSleepHour = this.totalSleepHour + 23L;
-        }
-        this.selectedAt = selectedAt;
-        this.conditions = conditions;
-        this.tag = tag;
-        this.memo = memo;
-    }
-
-    public void update(User user, LocalTime startSleep, LocalTime endSleep, List<String> tag ,Long conditions, String memo, LocalDate selectedAt){
-        this.user = user;
-        this.startSleep = startSleep;
-        this.endSleep = endSleep;
-        this.totalSleepMinute = ChronoUnit.MINUTES.between(startSleep, endSleep)%60;
-        if (this.totalSleepMinute < 0) {
-            this.totalSleepMinute = this.totalSleepMinute + 60L;
-        }
-        this.totalSleepHour = ChronoUnit.MINUTES.between(startSleep, endSleep)/60;
-        if (this.totalSleepHour <= 0) {
-            this.totalSleepHour = this.totalSleepHour + 23L;
-        }
-        this.selectedAt = selectedAt;
-        this.conditions = conditions;
-        this.tag = tag;
-        this.memo = memo;
-    }
-
-
-
-    //테스트 좀 해보겠습니다.
+    // 글 작성 생성자
     public Cards(CardsRequestDto requestDto, User user) {
         this.startSleep = requestDto.getStartSleep();
         this.endSleep = requestDto.getEndSleep();
+        this.totalSleepMinute = ChronoUnit.MINUTES.between(this.startSleep, this.endSleep)%60;
+        if (this.totalSleepMinute < 0) {
+            this.totalSleepMinute = this.totalSleepMinute + 60L;
+        }
+        this.totalSleepHour = ChronoUnit.MINUTES.between(this.startSleep, this.endSleep)/60;
+        if (this.totalSleepHour <= 0) {
+            this.totalSleepHour = this.totalSleepHour + 23L;
+        }
         this.tag = requestDto.getTag();
         this.conditions = requestDto.getConditions();
         this.memo = requestDto.getMemo();
         this.selectedAt = requestDto.getSelectedAt();
         this.user = user;
+    }
+    //수정 생성자
+    public void update(CardsRequestDto requestDto, User user){
+        this.user = user;
+        this.startSleep = requestDto.getStartSleep();
+        this.endSleep = requestDto.getEndSleep();
+        this.totalSleepMinute = ChronoUnit.MINUTES.between(this.startSleep, this.endSleep)%60;
+        if (this.totalSleepMinute < 0) {
+            this.totalSleepMinute = this.totalSleepMinute + 60L;
+        }
+        this.totalSleepHour = ChronoUnit.MINUTES.between(this.startSleep, this.endSleep)/60;
+        if (this.totalSleepHour <= 0) {
+            this.totalSleepHour = this.totalSleepHour + 23L;
+        }
+        this.selectedAt = requestDto.getSelectedAt();
+        this.conditions = requestDto.getConditions();
+        this.tag = requestDto.getTag();
+        this.memo = requestDto.getMemo();
     }
 
 }
