@@ -13,20 +13,20 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.sleepwell.domain.cards.Cards;
+import project.sleepwell.domain.cards.CardsRepository;
 import project.sleepwell.domain.user.Authority;
 import project.sleepwell.domain.refreshtoken.RefreshToken;
 import project.sleepwell.domain.user.User;
-import project.sleepwell.web.dto.LoginDto;
-import project.sleepwell.web.dto.SignupRequestDto;
-import project.sleepwell.web.dto.TokenDto;
-import project.sleepwell.web.dto.TokenRequestDto;
+import project.sleepwell.web.dto.*;
 import project.sleepwell.jwt.JwtTokenProvider;
 import project.sleepwell.kakaologin.KakaoOAuth2;
 import project.sleepwell.kakaologin.KakaoUserInfo;
 import project.sleepwell.domain.refreshtoken.RefreshTokenRepository;
 import project.sleepwell.domain.user.UserRepository;
 
-import java.util.Collections;
+import javax.smartcardio.Card;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,6 +43,8 @@ public class UserService {
     private final KakaoOAuth2 kakaoOAuth2;
     private final AuthenticationManager authenticationManager;
     private static final String ADMIN_TOKEN = "sample1234asdf";
+
+    private final CardsRepository cardRepository;
 
     /**
      * create user
@@ -187,6 +189,37 @@ public class UserService {
 
 
 
+
+    }
+
+    //내가 작성한 캘린더(카드들) 다 조회하기
+    public Map<String,Object> getMyCalendars(org.springframework.security.core.userdetails.User principal) {
+        Map<String, Object> calendarInfo = new LinkedHashMap<>();
+
+        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("nothing")
+        );
+        List<Cards> cards = user.getCards();
+
+        calendarInfo.put("userId", user.getId());
+        calendarInfo.put("cards", cards);
+
+//        List<Cards> cards = cardRepository.findByUserId(user.getId());
+//        List<Cards> cards = user.get().getCards();
+        return calendarInfo;
+
+
+    }
+
+    //카드 만들기
+    public Long createCard(CardsRequestDto requestDto, org.springframework.security.core.userdetails.User principal) {
+        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("nothing")
+        );
+        Cards card = new Cards(requestDto, user);
+        cardRepository.save(card);
+
+        return card.getId();
 
     }
 

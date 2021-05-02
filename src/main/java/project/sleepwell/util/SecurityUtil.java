@@ -19,10 +19,21 @@ public class SecurityUtil {
             throw new RuntimeException("Security Context 에 인증 정보가 없습니다.");
         }
 
-
         //authentication.getName() = userId
         return Long.parseLong(authentication.getName());
 
-
     }
+
+//    public static Long getCurrentUserIdTest() {
+//        //인증 정보 꺼내기
+//        final Authentication authentication = SecurityContextHolder.getContext().getAuthentication();   //== final 로 지정==/
+//
+//        if (authentication == null) {
+//            throw new RuntimeException("Security Context 에 인증 정보가 없습니다.");
+//        }
+//
+//        String username = authentication.getName(); //꺼내고
+//
+//
+//    }
 }
