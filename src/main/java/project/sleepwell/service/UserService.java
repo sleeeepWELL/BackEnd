@@ -128,7 +128,7 @@ public class UserService {
     }
 
     //kakao
-    public void kakaoLogin(String code) {
+    public TokenDto kakaoLogin(String code) {
         //카카오 OAuth2 를 통해 카카오 사용자 정보 조회
         //kakao user info : id, email, nickname
         KakaoUserInfo userInfo = kakaoOAuth2.getUserInfo(code);
@@ -165,12 +165,25 @@ public class UserService {
         UserDetails principal = new org.springframework.security.core.userdetails.User(
                 kakaoUser.getUsername(),
                 kakaoUser.getPassword(),
-                Collections.singleton(grantedAuthority));
+                Collections.singleton(grantedAuthority));       //이렇게만 해주면 현재 로그인한 회원에 카카오 유저가 연결이 돼있는 건가?
 
-        Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, principal.getAuthorities());
+        //email 과 password 넘기는 건지, 이렇게 3개를 넘기는 건지 아직 확신이 안 선다.
+        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, "", principal.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
+
         //프론트로 토큰 넘겨주기
-//        jwtTokenProvider.
+        TokenDto tokenDto = jwtTokenProvider.generateTokenDto(authentication);
+        //refresh token 저장
+        RefreshToken refreshToken = RefreshToken.builder()
+                .key(authentication.getName())
+                .value(tokenDto.getRefreshToken())  //tokenDto 에 refresh token 포함
+                .build();
+
+        refreshTokenRepository.save(refreshToken);  //key, value (String 으로 변경, db 오류?)
+
+        //프론트에 응답 코드 주기 (tokenDto 넘기면서) -> controller 가서 해야 할 듯
+        return tokenDto;
+
 
 
 

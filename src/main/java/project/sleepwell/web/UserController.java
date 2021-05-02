@@ -1,9 +1,14 @@
 package project.sleepwell.web;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import project.sleepwell.domain.user.Message;
+import project.sleepwell.domain.user.StatusEnum;
 import project.sleepwell.domain.user.User;
 import project.sleepwell.domain.user.UserRepository;
 import project.sleepwell.kakaologin.KakaoOAuth2;
@@ -16,6 +21,7 @@ import project.sleepwell.web.dto.TokenDto;
 import project.sleepwell.web.dto.TokenRequestDto;
 
 import javax.validation.Valid;
+import java.nio.charset.Charset;
 import java.util.Optional;
 
 @RequiredArgsConstructor
@@ -28,7 +34,7 @@ public class UserController {
     private final UserRepository userRepository;
 
     ////////////////////////////
-    //현재 로그인 하고 들어온 유저의 정보 뽑기 (테스트용. 개발자용) -> 성공
+    //현재 로그인 하고 들어온 유저의 정보 뽑기 (테스트용. 개발자용) -> 성공 -> SecurityUtil 바꿔서 안먹힘. 고쳐서 써먹어보자.
     @GetMapping("/test/users")
     public User getUserInfo() {
         Long userId = SecurityUtil.getCurrentUserId();
@@ -68,6 +74,21 @@ public class UserController {
         return ResponseEntity.ok(userService.login(loginDto));  //token 발행
     }
 
+    //login - client code test
+    @PostMapping("/api/login/code")
+    public ResponseEntity<Message> loginCode(@Valid @RequestBody LoginDto loginDto) {
+        TokenDto tokenDto = userService.login(loginDto);
+        Message message = new Message();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        message.setStatus(StatusEnum.OK);
+        message.setMessage("kakaoLoginSuccessCode");
+        message.setData(tokenDto);
+
+        return new ResponseEntity<>(message, headers, HttpStatus.ACCEPTED);
+    }
+
     //callback 받는 URI
     /**
      * 프론트에서 로그인 요청(oauth/authorize?) -> 로그인 후 동의 ->
@@ -75,9 +96,18 @@ public class UserController {
      * code 값으로 token 요청
      */
     @RequestMapping("/kakaoLogin")  //get mapping
-    public String kakaoLogin(@RequestParam String code) {
-        userService.kakaoLogin(code);
-        return "kakao login: success.";
+    public ResponseEntity<Message> kakaoLogin(@RequestParam String code) {
+        TokenDto tokenDto = userService.kakaoLogin(code);
+        //default status == bad request.
+        Message message = new Message();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+
+        message.setStatus(StatusEnum.OK);
+        message.setMessage("kakaoLoginSuccessCode");
+        message.setData(tokenDto);
+
+        return new ResponseEntity<>(message, headers, HttpStatus.OK);
     }
 
 
