@@ -23,6 +23,7 @@ import project.sleepwell.web.dto.TokenRequestDto;
 
 import javax.validation.Valid;
 import java.nio.charset.Charset;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -96,9 +97,26 @@ public class UserController {
      * 카카오 Authorization Server 는 이 uri 에 code 값을 넘겨줄 것이다.
      * code 값으로 token 요청
      */
+//    @RequestMapping("/kakaoLogin")  //get mapping
+//    public ResponseEntity<Message> kakaoLogin(@RequestParam String code) {
+//        TokenDto tokenDto = userService.kakaoLogin(code);
+//        //default status == bad request.
+//        Message message = new Message();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+//
+//        message.setStatus(StatusEnum.OK);
+//        message.setMessage("kakaoLoginSuccessCode");
+//        message.setData(tokenDto);
+//
+//        return new ResponseEntity<>(message, headers, HttpStatus.OK);
+//    }
+
+    //프론트에서 토큰까지 받아서 서버로 토큰 넘겨준다면 (동의하고 계속하기 버튼 누르면서 token 같이 넘겨주면 서버에서 받는다.)
     @RequestMapping("/kakaoLogin")  //get mapping
-    public ResponseEntity<Message> kakaoLogin(@RequestParam String code) {
-        TokenDto tokenDto = userService.kakaoLogin(code);
+    public ResponseEntity<Message> kakaoLogin(@RequestBody Map<String, Object> token) {
+        TokenDto tokenDto = userService.kakaoLogin(token.get("keyFromFront").toString());
+
         //default status == bad request.
         Message message = new Message();
         HttpHeaders headers = new HttpHeaders();
