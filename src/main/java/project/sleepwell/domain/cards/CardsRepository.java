@@ -16,7 +16,7 @@ public interface CardsRepository extends JpaRepository<Cards, Long> { // <Entity
 
     Optional<Cards> findBySelectedAt(LocalDate selectedAt);
 
-    List<Cards> findCardsBySelectedAtEqualsAndUser(LocalDate selectedAt, User user);
+    Cards findCardsBySelectedAtEqualsAndUser(LocalDate selectedAt, User user);
 
     List<Cards> findCardsByUser(User user);
 
