@@ -23,8 +23,8 @@ public class RefreshToken {
     }
 
     @Builder
-    public RefreshToken(String key, String value) {
-        this.refreshKey = key;
-        this.refreshValue = value;
+    public RefreshToken(String refreshKey, String refreshValue) {
+        this.refreshKey = refreshKey;
+        this.refreshValue = refreshValue;
     }
 }

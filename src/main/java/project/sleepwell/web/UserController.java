@@ -29,7 +29,6 @@ import java.util.Optional;
 public class UserController {
 
     private final UserService userService;
-    private final KakaoAPI kakaoService;
     private final KakaoOAuth2 kakaoOAuth2;
     private final UserRepository userRepository;
 
