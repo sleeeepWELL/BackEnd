@@ -1,12 +1,14 @@
 package project.sleepwell.web;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import project.sleepwell.config.MyConfigurationProperties;
 import project.sleepwell.domain.user.Message;
 import project.sleepwell.domain.user.StatusEnum;
 import project.sleepwell.domain.user.User;
@@ -29,6 +31,9 @@ public class UserController {
     private final UserService userService;
     private final KakaoOAuth2 kakaoOAuth2;
     private final UserRepository userRepository;
+
+    @Autowired
+    MyConfigurationProperties myConfigurationProperties;
 
     ////////////////////////////
     //현재 로그인 하고 들어온 유저의 정보 뽑기 (테스트용. 개발자용) -> 성공 -> SecurityUtil 바꿔서 안먹힘. 고쳐서 써먹어보자.

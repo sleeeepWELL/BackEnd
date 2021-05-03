@@ -34,8 +34,9 @@ public class JwtTokenProvider {
 
     private final Key key;
 
-    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey) {
+    public JwtTokenProvider(@Value("${my-config.secret-key}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        log.info("secret key = {}", secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
