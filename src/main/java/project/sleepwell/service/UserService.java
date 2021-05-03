@@ -2,6 +2,7 @@ package project.sleepwell.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.sleepwell.config.MyConfigurationProperties;
 import project.sleepwell.domain.cards.CardsRepository;
 import project.sleepwell.domain.refreshtoken.RefreshToken;
 import project.sleepwell.domain.refreshtoken.RefreshTokenRepository;
@@ -43,9 +45,12 @@ public class UserService {
 
     private final KakaoOAuth2 kakaoOAuth2;
     private final AuthenticationManager authenticationManager;
-    private static final String ADMIN_TOKEN = "sample1234asdf";
+//    private static final String ADMIN_TOKEN = "sample1234asdf";
 
     private final CardsRepository cardRepository;
+
+    @Autowired
+    MyConfigurationProperties myConfigurationProperties;
 
     /**
      * create user
@@ -145,9 +150,11 @@ public class UserService {
         //우리 db 에서 회원 id 와 패스워드. 회원 id(String) == 카카오 nickname
         String username = nickname;
         //패스워드 == 카카오 id + admin token  //==비밀번호 저장 방법 찾기==//
-        String password = kakaoId + ADMIN_TOKEN;
+//        String password = kakaoId + ADMIN_TOKEN;
+        String password = kakaoId + myConfigurationProperties.getAdminToken();
+        log.info("here!!! admin token = {}", myConfigurationProperties.getAdminToken());
 
-        // DB에 중복된 Kakao Id 가 있는지 확인
+        //우리 DB에 중복된 Kakao Id 가 있는지 확인
         User kakaoUser = userRepository.findByKakaoId(kakaoId)
                 .orElse(null);
 
