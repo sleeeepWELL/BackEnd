@@ -91,9 +91,9 @@ public class UserService {
                 .refreshValue(tokenDto.getRefreshToken())
                 .build();
 
+        
         refreshTokenRepository.save(refreshToken);
         //refresh token 재발행 테스트용 (데이터 확인하고 삭제할 것)
-        log.info("tokenDto = {}", tokenDto);
 
         //토큰 발급
         return tokenDto;
@@ -130,7 +130,6 @@ public class UserService {
 
         //refresh token 업데이트 (업데이트 할 때마다, 계속 데이터 쌓이는지 확인) -> 업데이트로 value 값 바뀌는 것 확인
         RefreshToken newRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
-        log.info("newRefreshToken = {}", newRefreshToken);
         refreshTokenRepository.save(newRefreshToken);
 
         //토큰 발급
