@@ -82,11 +82,13 @@ public class UserService {
 
         //refresh token 저장
         RefreshToken refreshToken = RefreshToken.builder()
-                .key(authentication.getName())
-                .value(tokenDto.getRefreshToken())
+                .refreshKey(authentication.getName())
+                .refreshValue(tokenDto.getRefreshToken())
                 .build();
 
-        refreshTokenRepository.save(refreshToken);  //key, value (String 으로 변경, db 오류?)
+        refreshTokenRepository.save(refreshToken);
+        //refresh token 재발행 테스트용 (데이터 확인하고 삭제할 것)
+        log.info("tokenDto = {}", tokenDto);
 
         //토큰 발급
         return tokenDto;
@@ -121,8 +123,9 @@ public class UserService {
         //새 토큰 생성
         TokenDto tokenDto = jwtTokenProvider.generateTokenDto(authentication);
 
-        //refresh token 저장하기
+        //refresh token 업데이트 (업데이트 할 때마다, 계속 데이터 쌓이는지 확인) -> 업데이트로 value 값 바뀌는 것 확인
         RefreshToken newRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
+        log.info("newRefreshToken = {}", newRefreshToken);
         refreshTokenRepository.save(newRefreshToken);
 
         //토큰 발급
@@ -162,7 +165,6 @@ public class UserService {
         }
 
         //스프링 시큐리티를 통해 로그인 처리
-        //카카오 유저도 email, password 로 매핑 할까..
         //카카오 유저 == 나의 유저를 시큐리티 유저와 매핑 시켜야 해 ( User kakaoUser )
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(kakaoUser.getAuthority().toString());
         UserDetails principal = new org.springframework.security.core.userdetails.User(
@@ -170,7 +172,7 @@ public class UserService {
                 kakaoUser.getPassword(),
                 Collections.singleton(grantedAuthority));       //이렇게만 해주면 현재 로그인한 회원에 카카오 유저가 연결이 돼있는 건가?
 
-        //email 과 password 넘기는 건지, 이렇게 3개를 넘기는 건지 아직 확신이 안 선다.
+        //왜 email 이 아니고 principal 객체를 넘겨야 하는 건지
         Authentication authentication = new UsernamePasswordAuthenticationToken(principal, "", principal.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
@@ -178,11 +180,11 @@ public class UserService {
         TokenDto tokenDto = jwtTokenProvider.generateTokenDto(authentication);
         //refresh token 저장
         RefreshToken refreshToken = RefreshToken.builder()
-                .key(authentication.getName())
-                .value(tokenDto.getRefreshToken())  //tokenDto 에 refresh token 포함
+                .refreshKey(authentication.getName())
+                .refreshValue(tokenDto.getRefreshToken())
                 .build();
 
-        refreshTokenRepository.save(refreshToken);  //key, value (String 으로 변경, db 오류?)
+        refreshTokenRepository.save(refreshToken);
 
         //프론트에 응답 코드 주기 (tokenDto 넘기면서) -> controller 가서 해야 할 듯
         return tokenDto;
