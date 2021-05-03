@@ -11,7 +11,6 @@ import project.sleepwell.domain.user.Message;
 import project.sleepwell.domain.user.StatusEnum;
 import project.sleepwell.domain.user.User;
 import project.sleepwell.domain.user.UserRepository;
-import project.sleepwell.kakaologin.KakaoAPI;
 import project.sleepwell.kakaologin.KakaoOAuth2;
 import project.sleepwell.service.UserService;
 import project.sleepwell.util.SecurityUtil;

@@ -22,17 +22,12 @@ public class CardsRestController {
 
     private final CardsService cardsService;
 
-    //전체 조회(관리자용..? 모든 카드 조회 - 혹시 몰라서 남겨둠.)
-    @GetMapping("/allCalendars")
-    public List<Cards> findAll(){
-        return cardsService.findAll();
-    }
-
-//    //내 캘린더 조회
-//    @GetMapping("/calendars")
-//    public Map<String, Object> getMyCalendars(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-//        return cardsService.getMyCalendars(principal);   //calendarInfo 반환하게
+//    //전체 조회(관리자용..? 모든 카드 조회 - 혹시 몰라서 남겨둠.)
+//    @GetMapping("/allCalendars")
+//    public List<Cards> findAll(){
+//        return cardsService.findAll();
 //    }
+
     //내 캘린더 조회
     @GetMapping("/calendars")
     public List<Cards> getMyCalendars(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
@@ -51,15 +46,10 @@ public class CardsRestController {
         return cardsService.update(selectedAt,requestDto,principal);
     }
 
-//    //상세 조회
-//    @GetMapping("/cards/{selectedAt}")
-//    public Map<String, Object> findBySelectedAt(@PathVariable("selectedAt") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate selectedAt, @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-//        return cardsService.findBySelectedAt(selectedAt,principal);
-//    }
     //상세 조회
     @GetMapping("/cards/{selectedAt}")
-    public List<Cards> findBySelectedAt(@PathVariable("selectedAt") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate selectedAt, @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-        return cardsService.findBySelectedAt(selectedAt,principal);
+    public Cards findBySelectedAt(@PathVariable("selectedAt") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate selectedAt, @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
+        return cardsService.findBySelectedAt(selectedAt, principal);
     }
 
     //삭제
