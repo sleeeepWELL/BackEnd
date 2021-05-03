@@ -10,7 +10,6 @@ import project.sleepwell.web.dto.CardsRequestDto;
 import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
 
 @Getter
@@ -58,14 +57,8 @@ public class Cards{
         this.user = user;
         this.startSleep = requestDto.getStartSleep();
         this.endSleep = requestDto.getEndSleep();
-        this.totalSleepMinute = ChronoUnit.MINUTES.between(this.startSleep, this.endSleep)%60;
-        if (this.totalSleepMinute < 0) {
-            this.totalSleepMinute = this.totalSleepMinute + 60L;
-        }
-        this.totalSleepHour = ChronoUnit.MINUTES.between(this.startSleep, this.endSleep)/60;
-        if (this.totalSleepHour <= 0) {
-            this.totalSleepHour = this.totalSleepHour + 23L;
-        }
+        this.totalSleepHour = requestDto.totalSleep(this.startSleep, this.endSleep).get(0);
+        this.totalSleepMinute = requestDto.totalSleep(this.startSleep, this.endSleep).get(1);
         this.tag = requestDto.getTag();
         this.conditions = requestDto.getConditions();
         this.memo = requestDto.getMemo();
@@ -77,14 +70,8 @@ public class Cards{
         this.user = user;
         this.startSleep = requestDto.getStartSleep();
         this.endSleep = requestDto.getEndSleep();
-        this.totalSleepMinute = ChronoUnit.MINUTES.between(this.startSleep, this.endSleep)%60;
-        if (this.totalSleepMinute < 0) {
-            this.totalSleepMinute = this.totalSleepMinute + 60L;
-        }
-        this.totalSleepHour = ChronoUnit.MINUTES.between(this.startSleep, this.endSleep)/60;
-        if (this.totalSleepHour <= 0) {
-            this.totalSleepHour = this.totalSleepHour + 23L;
-        }
+        this.totalSleepHour = requestDto.totalSleep(this.startSleep, this.endSleep).get(0);
+        this.totalSleepMinute = requestDto.totalSleep(this.startSleep, this.endSleep).get(1);
         this.selectedAt = requestDto.getSelectedAt();
         this.conditions = requestDto.getConditions();
         this.tag = requestDto.getTag();

@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -22,15 +24,28 @@ public class CardsRequestDto {
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate selectedAt;
 
-//    //save,update dto
-//    @Builder
-//    public CardsRequestDto(LocalTime startSleep, LocalTime endSleep, List<String> tag, Long conditions, String memo, LocalDate selectedAt) {
-//        this.startSleep = startSleep;
-//        this.endSleep = endSleep;
-//        this.tag = tag;
-//        this.conditions = conditions;
-//        this.memo = memo;
-//        this.selectedAt = selectedAt;
-//    }
+    public List<Long> totalSleep(LocalTime startSleep, LocalTime endSleep){
+        List<Long> myTotalSleep = new ArrayList<>();
+        //case01 - 둘다 양수
+        Long totalSleepMinute = ChronoUnit.MINUTES.between(this.startSleep, this.endSleep)%60;
+        Long totalSleepHour = ChronoUnit.MINUTES.between(this.startSleep, this.endSleep)/60;
+        //case02 - 시간 양수, 분 음수
+        if (totalSleepHour >= 0 & totalSleepMinute < 0) {
+            totalSleepHour = totalSleepHour - 1L;
+            totalSleepMinute = totalSleepMinute + 60L;
+        }
+        //case03 - 시간 음수, 분 양수
+        if (totalSleepHour < 0 & totalSleepMinute >= 0) {
+            totalSleepHour = totalSleepHour + 24L;
+        }
+        //case04 - 둘다 음수
+        if (totalSleepHour < 0 & totalSleepMinute < 0) {
+            totalSleepHour = totalSleepHour + 23L;
+            totalSleepMinute = totalSleepMinute + 60L;
+        }
+        myTotalSleep.add(totalSleepHour);
+        myTotalSleep.add(totalSleepMinute);
+        return myTotalSleep;
+    }
 
 }
