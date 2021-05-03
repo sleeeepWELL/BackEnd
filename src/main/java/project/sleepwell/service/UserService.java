@@ -138,10 +138,69 @@ public class UserService {
     }
 
     //kakao
-    public TokenDto kakaoLogin(String code) {
-        //카카오 OAuth2 를 통해 카카오 사용자 정보 조회
-        //kakao user info : id, email, nickname
-        KakaoUserInfo userInfo = kakaoOAuth2.getUserInfo(code);
+//    public TokenDto kakaoLogin(String code) {
+//        //카카오 OAuth2 를 통해 카카오 사용자 정보 조회
+//        //kakao user info : id, email, nickname
+//        KakaoUserInfo userInfo = kakaoOAuth2.getUserInfo(code);
+//        Long kakaoId = userInfo.getId();
+//        String nickname = userInfo.getNickname();
+//        String email = userInfo.getEmail();
+//
+//        //우리 db 에서 회원 id 와 패스워드. 회원 id(String) == 카카오 nickname
+//        String username = nickname;
+//        //패스워드 == 카카오 id + admin token  //==비밀번호 저장 방법 찾기==//
+////        String password = kakaoId + ADMIN_TOKEN;
+//        String password = kakaoId + myConfigurationProperties.getAdminToken();
+//        log.info("here!!! admin token = {}", myConfigurationProperties.getAdminToken());
+//
+//        //우리 DB에 중복된 Kakao Id 가 있는지 확인
+//        User kakaoUser = userRepository.findByKakaoId(kakaoId)
+//                .orElse(null);
+//
+//        //카카오 정보로 회원가입 (null 이면 가입)
+//        if (kakaoUser == null) {
+//            //패스워드 인코딩
+//            String encodedPassword = passwordEncoder.encode(password);
+//            // ROLE = 사용자
+//            Authority authority = Authority.ROLE_USER;
+//
+//            //오류 고칠 것==========================//
+//            kakaoUser = new User(username, encodedPassword, email, authority, kakaoId);
+//            log.info("kakao user = {}", kakaoUser);     //정상적으로 저장이 될테고
+//            userRepository.save(kakaoUser);
+//        }
+//
+//        //스프링 시큐리티를 통해 로그인 처리
+//        //카카오 유저 == 나의 유저를 시큐리티 유저와 매핑 시켜야 해 ( User kakaoUser )
+//        GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(kakaoUser.getAuthority().toString());
+//        UserDetails principal = new org.springframework.security.core.userdetails.User(
+//                kakaoUser.getUsername(),
+//                kakaoUser.getPassword(),
+//                Collections.singleton(grantedAuthority));       //이렇게만 해주면 현재 로그인한 회원에 카카오 유저가 연결이 돼있는 건가?
+//
+//        //왜 email 이 아니고 principal 객체를 넘겨야 하는 건지
+//        Authentication authentication = new UsernamePasswordAuthenticationToken(principal, "", principal.getAuthorities());
+//        SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+//        //프론트로 토큰 넘겨주기
+//        TokenDto tokenDto = jwtTokenProvider.generateTokenDto(authentication);
+//        //refresh token 저장
+//        RefreshToken refreshToken = RefreshToken.builder()
+//                .refreshKey(authentication.getName())
+//                .refreshValue(tokenDto.getRefreshToken())
+//                .build();
+//
+//        refreshTokenRepository.save(refreshToken);
+//
+//        //프론트에 응답 코드 주기 (tokenDto 넘기면서) -> controller 가서 해야 할 듯
+//        return tokenDto;
+//
+//    }
+
+    //프론트에서 보내주는 토큰 값으로 카카오 사용자 정보 가져오기
+    public TokenDto kakaoLogin(String token) {
+        KakaoUserInfo userInfo = kakaoOAuth2.getUserInfo(token);
+
         Long kakaoId = userInfo.getId();
         String nickname = userInfo.getNickname();
         String email = userInfo.getEmail();
