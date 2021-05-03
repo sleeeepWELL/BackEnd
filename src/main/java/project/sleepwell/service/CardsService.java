@@ -32,13 +32,13 @@ public class CardsService {
     //수정
     @Transactional
     public String update(LocalDate selectedAt, CardsRequestDto requestDto, org.springframework.security.core.userdetails.User principal){
-        Cards cards = cardsRepository.findBySelectedAt(selectedAt).orElseThrow(
-                () -> new IllegalArgumentException("{\"selectedAt\":"+selectedAt+"}")
-        );
         User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("nothing")
         );
-
+        Cards cards= cardsRepository.findCardsBySelectedAtEqualsAndUser(selectedAt, user);
+        if(cards==null){
+            throw new IllegalArgumentException("{\"selectedAt\":"+selectedAt+"}");
+        }
         cards.update(requestDto, user);
 
         return "ok";
@@ -56,10 +56,10 @@ public class CardsService {
         return cards;
     }
 
-    //전체조회
-    public List<Cards> findAll() {
-        return cardsRepository.findAll();
-    }
+//    //전체조회
+//    public List<Cards> findAll() {
+//        return cardsRepository.findAll();
+//    }
 
     //내가 작성한 캘린더(카드들) 다 조회하기
     public List<Cards> getMyCalendars(org.springframework.security.core.userdetails.User principal) {
