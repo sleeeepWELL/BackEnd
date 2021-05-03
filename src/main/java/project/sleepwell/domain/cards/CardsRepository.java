@@ -1,6 +1,7 @@
 package project.sleepwell.domain.cards;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import project.sleepwell.domain.user.User;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,5 +13,13 @@ import java.util.Optional;
 public interface CardsRepository extends JpaRepository<Cards, Long> { // <Entity Class, PK type> -> 기본적인 CRUD 메서드 자동으로 생성
 
     List<Cards> findAll();
+
     Optional<Cards> findBySelectedAt(LocalDate selectedAt);
+
+    List<Cards> findCardsBySelectedAtEqualsAndUser(LocalDate selectedAt, User user);
+
+    List<Cards> findCardsByUser(User user);
+
+    String deleteCardsBySelectedAtEqualsAndUser(LocalDate selectedAt, User user);
+
 }

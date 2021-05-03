@@ -1,6 +1,7 @@
 package project.sleepwell.domain.cards;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.sleepwell.domain.user.User;
@@ -26,9 +27,11 @@ public class Cards{
     private User user;
 
     @Column(nullable = false)
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime startSleep;
 
     @Column(nullable = false)
+    @JsonFormat(pattern = "HH:mm")
     private LocalTime endSleep;
 
     @Column
@@ -47,6 +50,7 @@ public class Cards{
     private String memo;
 
     @Column
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate selectedAt;
 
     // 글 작성 생성자
