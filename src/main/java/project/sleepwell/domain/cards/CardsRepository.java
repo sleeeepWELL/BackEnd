@@ -5,7 +5,6 @@ import project.sleepwell.domain.user.User;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 
 
 // Entity Class 인 Cards 와 같은 위치에 놓은 이유는 Entity 클래스는 기본 Repository 없이는 제대로 된 역할을 할 수 없기 때문
@@ -13,8 +12,6 @@ import java.util.Optional;
 public interface CardsRepository extends JpaRepository<Cards, Long> { // <Entity Class, PK type> -> 기본적인 CRUD 메서드 자동으로 생성
 
     List<Cards> findAll();
-
-    Optional<Cards> findBySelectedAt(LocalDate selectedAt);
 
     Cards findCardsBySelectedAtEqualsAndUser(LocalDate selectedAt, User user);
 

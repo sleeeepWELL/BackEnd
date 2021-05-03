@@ -55,6 +55,7 @@ public class Cards{
 
     // 글 작성 생성자
     public Cards(CardsRequestDto requestDto, User user) {
+        this.user = user;
         this.startSleep = requestDto.getStartSleep();
         this.endSleep = requestDto.getEndSleep();
         this.totalSleepMinute = ChronoUnit.MINUTES.between(this.startSleep, this.endSleep)%60;
@@ -69,8 +70,8 @@ public class Cards{
         this.conditions = requestDto.getConditions();
         this.memo = requestDto.getMemo();
         this.selectedAt = requestDto.getSelectedAt();
-        this.user = user;
     }
+
     //수정 생성자
     public void update(CardsRequestDto requestDto, User user){
         this.user = user;
