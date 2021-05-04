@@ -18,15 +18,14 @@ public class CardsService {
     private final CardsRepository cardsRepository;
     private final UserRepository userRepository;
 
-    //카드 만들기
-    public Long createCard(CardsRequestDto requestDto, org.springframework.security.core.userdetails.User principal) {
+    //게시
+    @Transactional
+    public String save(CardsRequestDto requestDto, org.springframework.security.core.userdetails.User principal) {
         User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("nothing")
         );
-        Cards card = new Cards(requestDto, user);
-        cardsRepository.save(card);
-
-        return card.getId();
+        cardsRepository.save(requestDto.toEntity(user));
+        return "ok";
     }
 
     //수정
@@ -39,8 +38,8 @@ public class CardsService {
         if(cards==null){
             throw new IllegalArgumentException("{\"selectedAt\":"+selectedAt+"}");
         }
-        cards.update(requestDto, user);
-
+        cards.update(requestDto.getStartSleep(),requestDto.getEndSleep(),requestDto.getTag(),requestDto.getConditions(),requestDto.getMemo());
+//        cardsRepository.save(requestDto.toEntity(user)); // 업데이트 되지 않고 하나 더 생김 -> repository 메서드에는 update가 정녕 없나? -> 만들어줘야되나?
         return "ok";
     }
 

@@ -36,8 +36,8 @@ public class CardsRestController {
 
     //카드 작성
     @PostMapping("/cards")
-    public Long createCard(@RequestBody CardsRequestDto requestDto, @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-        return cardsService.createCard(requestDto, principal);
+    public String createCard(@RequestBody CardsRequestDto requestDto, @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
+        return cardsService.save(requestDto,principal);
     }
 
     //수정
