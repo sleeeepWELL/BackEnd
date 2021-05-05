@@ -1,5 +1,6 @@
 package project.sleepwell.web;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -21,7 +22,9 @@ import project.sleepwell.web.dto.SignupRequestDto;
 import project.sleepwell.web.dto.TokenDto;
 import project.sleepwell.web.dto.TokenRequestDto;
 
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
 
@@ -73,23 +76,33 @@ public class UserController {
     //login
     @PostMapping("/api/login")
     public ResponseEntity<TokenDto> login(@Valid @RequestBody LoginDto loginDto) {
-        return ResponseEntity.ok(userService.login(loginDto));  //token 발행
+        TokenDto tokenDto = userService.login(loginDto);
+        return ResponseEntity.ok(tokenDto);
+
+//        return ResponseEntity.ok(userService.login(loginDto));  //token 발행
     }
+
+    //테스트 용
+//    @PostMapping("/api/login")
+//    public ResponseEntity<String> login(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) throws IOException {
+//        userService.login(loginDto, response);  //token 발행
+//        return ResponseEntity.ok().body("ok");
+//    }
 
     //login - client code test
-    @PostMapping("/api/login/code")
-    public ResponseEntity<Message> loginCode(@Valid @RequestBody LoginDto loginDto) {
-        TokenDto tokenDto = userService.login(loginDto);
-        Message message = new Message();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-
-        message.setStatus(StatusEnum.OK);
-        message.setMessage("kakaoLoginSuccessCode");
-        message.setData(tokenDto);
-
-        return new ResponseEntity<>(message, headers, HttpStatus.ACCEPTED);
-    }
+//    @PostMapping("/api/login/code")
+//    public ResponseEntity<Message> loginCode(@Valid @RequestBody LoginDto loginDto) throws JsonProcessingException {
+//        TokenDto tokenDto = userService.login(loginDto);
+//        Message message = new Message();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+//
+//        message.setStatus(StatusEnum.OK);
+//        message.setMessage("kakaoLoginSuccessCode");
+//        message.setData(tokenDto);
+//
+//        return new ResponseEntity<>(message, headers, HttpStatus.ACCEPTED);
+//    }
 
     //callback 받는 URI
     /**
@@ -112,22 +125,23 @@ public class UserController {
 //        return new ResponseEntity<>(message, headers, HttpStatus.OK);
 //    }
 
+    //1.
     //프론트에서 토큰까지 받아서 서버로 토큰 넘겨준다면 (동의하고 계속하기 버튼 누르면서 token 같이 넘겨주면 서버에서 받는다.)
-    @RequestMapping("/kakaoLogin")  //get mapping
-    public ResponseEntity<Message> kakaoLogin(@RequestBody Map<String, Object> token) {
-        TokenDto tokenDto = userService.kakaoLogin(token.get("keyFromFront").toString());
-
-        //default status == bad request.
-        Message message = new Message();
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-
-        message.setStatus(StatusEnum.OK);
-        message.setMessage("kakaoLoginSuccessCode");
-        message.setData(tokenDto);
-
-        return new ResponseEntity<>(message, headers, HttpStatus.OK);
-    }
+//    @RequestMapping("/kakaoLogin")  //get mapping
+//    public ResponseEntity<Message> kakaoLogin(@RequestBody Map<String, Object> token) {
+//        TokenDto tokenDto = userService.kakaoLogin(token.get("keyFromFront").toString());
+//
+//        //default status == bad request.
+//        Message message = new Message();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+//
+//        message.setStatus(StatusEnum.OK);
+//        message.setMessage("kakaoLoginSuccessCode");
+//        message.setData(tokenDto);
+//
+//        return new ResponseEntity<>(message, headers, HttpStatus.OK);
+//    }
 
 
     @PostMapping("/reissue")

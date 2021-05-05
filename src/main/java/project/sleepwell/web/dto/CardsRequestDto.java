@@ -27,15 +27,15 @@ public class CardsRequestDto {
 
 
     //save,update dto
-    @Builder
-    public CardsRequestDto(LocalTime startSleep, LocalTime endSleep, List<String> tag, Long conditions, String memo, LocalDate selectedAt) {
-        this.startSleep = startSleep;
-        this.endSleep = endSleep;
-        this.tag = tag;
-        this.conditions = conditions;
-        this.memo = memo;
-        this.selectedAt = selectedAt;
-    }
+//    @Builder
+//    public CardsRequestDto(LocalTime startSleep, LocalTime endSleep, List<String> tag, Long conditions, String memo, LocalDate selectedAt) {
+//        this.startSleep = startSleep;
+//        this.endSleep = endSleep;
+//        this.tag = tag;
+//        this.conditions = conditions;
+//        this.memo = memo;
+//        this.selectedAt = selectedAt;
+//    }
 
     public Cards toEntity(User user) {
         return Cards.builder()
