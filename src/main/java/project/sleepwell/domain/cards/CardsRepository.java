@@ -19,4 +19,6 @@ public interface CardsRepository extends JpaRepository<Cards, Long> { // <Entity
 
     String deleteCardsBySelectedAtEqualsAndUser(LocalDate selectedAt, User user);
 
+    List<Cards> findCardsByConditionsGreaterThanAndUserEquals(Long conditions, User user);
+
 }
