@@ -25,6 +25,8 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.6.2'
+    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
+    implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
 
     implementation 'org.json:json:20190722'
 
@@ -47,7 +49,7 @@ dependencies {
     runtime group: 'io.jsonwebtoken', name: 'jjwt-impl', version: '0.11.2'
     runtime group: 'io.jsonwebtoken', name: 'jjwt-jackson', version: '0.11.2'
 
-    //ConfigurationProperties 사용        -> 보류
+    //ConfigurationProperties 사용
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
 }
 

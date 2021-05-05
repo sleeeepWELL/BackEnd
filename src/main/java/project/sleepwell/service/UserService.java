@@ -1,8 +1,11 @@
 package project.sleepwell.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -21,6 +24,7 @@ import project.sleepwell.domain.refreshtoken.RefreshTokenRepository;
 import project.sleepwell.domain.user.Authority;
 import project.sleepwell.domain.user.User;
 import project.sleepwell.domain.user.UserRepository;
+import project.sleepwell.jwt.JwtFilter;
 import project.sleepwell.jwt.JwtTokenProvider;
 import project.sleepwell.kakaologin.KakaoOAuth2;
 import project.sleepwell.kakaologin.KakaoUserInfo;
@@ -29,6 +33,8 @@ import project.sleepwell.web.dto.SignupRequestDto;
 import project.sleepwell.web.dto.TokenDto;
 import project.sleepwell.web.dto.TokenRequestDto;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Collections;
 
 @Slf4j
@@ -94,6 +100,17 @@ public class UserService {
         
         refreshTokenRepository.save(refreshToken);
         //refresh token 재발행 테스트용 (데이터 확인하고 삭제할 것)
+
+        //token 을 header 에 넣자
+//        HttpHeaders httpHeaders = new HttpHeaders();
+//        httpHeaders.add(JwtFilter.AUTHORIZATION_HEADER, "Bearer " + tokenDto.getAccessToken());
+//
+//        //body 에 담을 토큰 만들기
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String tokenDtoJson = objectMapper.writeValueAsString(tokenDto);
+//
+//        //response 에 토큰 담기
+//        response.getWriter().write(tokenDtoJson);
 
         //토큰 발급
         return tokenDto;
@@ -197,6 +214,7 @@ public class UserService {
 //
 //    }
 
+    //1.
     //프론트에서 보내주는 토큰 값으로 카카오 사용자 정보 가져오기
     public TokenDto kakaoLogin(String token) {
         KakaoUserInfo userInfo = kakaoOAuth2.getUserInfo(token);
