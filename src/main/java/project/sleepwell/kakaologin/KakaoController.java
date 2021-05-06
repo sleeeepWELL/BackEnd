@@ -38,7 +38,7 @@ public class KakaoController {
     private final KakaoService kakaoService;
 
     @GetMapping("/kakaoLogin")
-    public String kakaoLogin(@RequestParam String code, HttpServletResponse response) throws IOException {
+    public String kakaoLogin(String code, HttpServletResponse response) throws IOException {
 
         LoginDto kakaoLoginDto = kakaoService.kakaoLogin(code);
 
@@ -52,8 +52,9 @@ public class KakaoController {
 //            CloseableHttpClient client = HttpClientBuilder.create().build();
             HttpClient client = HttpClientBuilder.create().build();
 //            HttpClient client = HttpClientBuilder.create().build();
-            String postUrl = "http://54.180.79.156/api/login";
-//            String postUrl = "http://localhost:8080/api/login";
+//       /data, url 로 보냄
+//            String postUrl = "http://54.180.79.156/api/login";
+            String postUrl = "http://localhost:8080/api/login";
             HttpPost httpPost = new HttpPost(postUrl);
             String data = "{" +
                     "\"email\": \"" + email + "\", " +
@@ -62,8 +63,7 @@ public class KakaoController {
 
 ////            StringEntity entity = new StringEntity(data, ContentType.APPLICATION_FORM_URLENCODED);
             StringEntity entity = new StringEntity(data, ContentType.APPLICATION_JSON);
-            httpPost.setEntity(entity); //data, url 로 보냄
-
+            httpPost.setEntity(entity);
             System.out.println(entity.getContent());
 //
 //           //응답 헤더에 있는 값들 다 받은 것. -> 네트워크 or 포스트맨으로 확인

@@ -22,6 +22,7 @@ import project.sleepwell.web.dto.SignupRequestDto;
 import project.sleepwell.web.dto.TokenDto;
 import project.sleepwell.web.dto.TokenRequestDto;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -81,6 +82,34 @@ public class UserController {
 
 //        return ResponseEntity.ok(userService.login(loginDto));  //token 발행
     }
+
+    //테스트
+    @GetMapping("/oauth/callback/kakao")
+    public TokenDto kakaoLogin(String code) {
+        TokenDto tokenDto = userService.kakaoLogin(code);
+        return tokenDto;
+    }
+
+
+//    @RequestMapping("/oauth/callback/kakao")
+//    public TokenDto kakaoLogin(String code, Red) throws IOException {
+//        TokenDto tokenDto = userService.kakaoLogin(code);
+//        //default status == bad request.
+////        Message message = new Message();
+////        HttpHeaders headers = new HttpHeaders();
+////        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+//
+//
+////        message.setStatus(StatusEnum.OK);
+////        message.setMessage("kakaoLoginSuccessCode");
+////        message.setData(tokenDto);
+//
+////        headers.add("accessToken", tokenDto.getAccessToken());
+//        return tokenDto;
+////        response.sendRedirect("https://www.cami.kr/");
+//    }
+
+
 
     //테스트 용
 //    @PostMapping("/api/login")

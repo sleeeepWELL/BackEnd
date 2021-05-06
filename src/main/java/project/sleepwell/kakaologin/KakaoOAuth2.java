@@ -52,10 +52,11 @@ public class KakaoOAuth2 {
         params.add("grant_type", "authorization_code");
 //        params.add("client_id", "");        //==클라이언트 아이디===============//
         params.add("client_id", myConfigurationProperties.getClientId());
-//        params.add("redirect_url", "http://localhost:3000/kakaoLogin");
-        params.add("redirect_uri", "http://54.180.79.156/kakaoLogin");
-//        params.add("redirect_url", "http://localhost:8080/kakaoLogin");
+//        params.add("redirect_uri", "http://localhost:3000/oauth/callback/kakao");
+//        params.add("redirect_uri", "http://54.180.79.156/oauth/callback/kakao");
+        params.add("redirect_uri", "http://localhost:8080/oauth/callback/kakao");
         params.add("code", authorizedCode);
+
 
         //HttpHeader 와 HttpBody 를 하나의 오브젝트에 담기
         RestTemplate rt = new RestTemplate();
@@ -73,6 +74,8 @@ public class KakaoOAuth2 {
         String tokenJson = response.getBody();
         JSONObject rjson = new JSONObject(tokenJson);
         String accessToken = rjson.getString("access_token");
+
+        System.out.println("액세스 토큰 제발!!!" + accessToken);
 
         return accessToken;
     }

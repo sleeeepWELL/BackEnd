@@ -51,6 +51,10 @@ dependencies {
 
     //ConfigurationProperties 사용
     annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+
+    // utility
+    implementation 'com.github.scribejava:scribejava-core:8.1.0'
+    implementation 'com.github.scribejava:scribejava-apis:8.1.0'
 }
 
 test {

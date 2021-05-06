@@ -6,6 +6,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -45,11 +46,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     //h2 console 로 테스트 할 것
-//    @Override
-//    public void configure(WebSecurity web) throws Exception {
-//        web.ignoring()
-//                .antMatchers("h2-console/**", "/favicon.ico");
-//    }
+    @Override
+    public void configure(WebSecurity web)  {
+        web.ignoring()
+                .antMatchers("/favicon.ico", "/error");
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
@@ -60,7 +61,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/api/login").permitAll()
                 .antMatchers("/api/login/code").permitAll()     //응답 코드 테스트용
-                .antMatchers("/kakaoLogin").permitAll();
+                .antMatchers("/kakaoLogin").permitAll()
+                .antMatchers("/oauth/kakao").permitAll()
+                .antMatchers("/oauth/callback/kakao").permitAll();
 
 
         http
