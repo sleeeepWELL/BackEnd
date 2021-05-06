@@ -16,4 +16,8 @@ public class MyConfigurationProperties {
     private String adminToken;
     private String secretKey;
 
+    private String baseUrl;
+    private String loginUrl;
+
+
 }

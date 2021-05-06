@@ -3,10 +3,7 @@ package project.sleepwell.web;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import project.sleepwell.config.MyConfigurationProperties;
@@ -15,6 +12,7 @@ import project.sleepwell.domain.user.StatusEnum;
 import project.sleepwell.domain.user.User;
 import project.sleepwell.domain.user.UserRepository;
 import project.sleepwell.kakaologin.KakaoOAuth2;
+import project.sleepwell.kakaologin.KakaoService;
 import project.sleepwell.service.UserService;
 import project.sleepwell.util.SecurityUtil;
 import project.sleepwell.web.dto.LoginDto;
@@ -25,6 +23,7 @@ import project.sleepwell.web.dto.TokenRequestDto;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.xml.ws.Response;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
@@ -36,6 +35,7 @@ public class UserController {
     private final UserService userService;
     private final KakaoOAuth2 kakaoOAuth2;
     private final UserRepository userRepository;
+    private final KakaoService kakaoService;
 
     @Autowired
     MyConfigurationProperties myConfigurationProperties;
@@ -84,10 +84,21 @@ public class UserController {
     }
 
     //테스트
+    //정주님 -> 서버에 코드 보내주는 api
+    //토큰 콜백: http://localhost:8080/oauth/callback/kakao
+    //codeRequestDto
+//    @PostMapping("/oauth/callback/kakao")
+//    public ResponseEntity<TokenDto> kakaoLogin(@RequestBody String authorizedCode) {
+//        TokenDto tokenDto = kakaoService.kakaoLogin(authorizedCode);
+//        return ResponseEntity.ok(tokenDto);
+//    }
+
+    //임시 테스트용 (서버에서 전부 리다이렉트 받는 경우. 브라우저로 테스트 해서 결과 보기 위함)-> 성공
+    //POST 메서드로 하니까 못 받네. 405 에러
     @GetMapping("/oauth/callback/kakao")
-    public TokenDto kakaoLogin(String code) {
-        TokenDto tokenDto = userService.kakaoLogin(code);
-        return tokenDto;
+    public ResponseEntity<TokenDto> kakaoLogin(String code) {
+        TokenDto tokenDto = kakaoService.kakaoLogin(code);
+        return ResponseEntity.ok(tokenDto);
     }
 
 
@@ -108,7 +119,6 @@ public class UserController {
 //        return tokenDto;
 ////        response.sendRedirect("https://www.cami.kr/");
 //    }
-
 
 
     //테스트 용
