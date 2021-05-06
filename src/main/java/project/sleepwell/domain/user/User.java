@@ -35,6 +35,10 @@ public class User {
 
     private Long kakaoId;
 
+    public void setKakaoId(Long kakaoId) {
+        this.kakaoId = kakaoId;
+    }
+
     @Builder
     public User(String username, String email, String password, Authority authority) {
         this.username = username;

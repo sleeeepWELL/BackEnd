@@ -26,12 +26,18 @@ public class KakaoOAuth2 {
     public KakaoUserInfo getUserInfo(String authorizedCode) {
         //1.인가코드 -> 액세스 토큰
         String accessToken = getAccessToken(authorizedCode);
-
         //2.액세스 토큰 -> 카카오 사용자 정보
         KakaoUserInfo userInfo = getUserInfoByToken(accessToken);
-
         return userInfo;
     }
+
+
+    //프론트에게 받은 인가 코드로 카카오 서버한테 요청해서 액세스 토큰 받기
+    public String requestAccessToken(String authorizedCode) {
+        String accessToken = getAccessToken(authorizedCode);
+        return accessToken;
+    }
+
 
     //토큰으로 카카오 유저 정보 가져오기
 //    public KakaoUserInfo getUserInfo(String token) {
@@ -41,7 +47,7 @@ public class KakaoOAuth2 {
 //        return userInfo;
 //    }
 
-    //방법 2 -> 프론트에서 처리하면 서버에서는 필요없는 메서드
+    //방법 2 -> 프론트에서 백으로 코드를 넘겨줌
     private String getAccessToken(String authorizedCode) {
         //HttpHeader 오브젝트 생성
         HttpHeaders headers = new HttpHeaders();
@@ -50,7 +56,6 @@ public class KakaoOAuth2 {
         //HttpBody 오브젝트 생성
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
-//        params.add("client_id", "");        //==클라이언트 아이디===============//
         params.add("client_id", myConfigurationProperties.getClientId());
 //        params.add("redirect_uri", "http://localhost:3000/oauth/callback/kakao");
 //        params.add("redirect_uri", "http://54.180.79.156/oauth/callback/kakao");
@@ -70,6 +75,10 @@ public class KakaoOAuth2 {
                 String.class
         );
 
+        /**
+         *요청 성공 시, 응답은 JSON 객체로 Redirect URI 에 전달되며 두 가지 종류의
+         * 토큰 값과 타입, 초 단위로 된 만료 시간을 포함하고 있다. (우리는 access_token 만 필요)
+         */
         //Json -> 액세스 토큰 파싱
         String tokenJson = response.getBody();
         JSONObject rjson = new JSONObject(tokenJson);

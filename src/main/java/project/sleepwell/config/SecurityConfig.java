@@ -63,7 +63,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/api/login/code").permitAll()     //응답 코드 테스트용
                 .antMatchers("/kakaoLogin").permitAll()
                 .antMatchers("/oauth/kakao").permitAll()
-                .antMatchers("/oauth/callback/kakao").permitAll();
+                .antMatchers("/oauth/callback/kakao").permitAll()
+                .antMatchers("/authorize/code").permitAll();
+
 
 
         http

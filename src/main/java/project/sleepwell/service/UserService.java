@@ -155,10 +155,10 @@ public class UserService {
     }
 
     //kakao
-    public TokenDto kakaoLogin(String code) {
+    public TokenDto kakaoLogin(String authorizedCode) {
         //카카오 OAuth2 를 통해 카카오 사용자 정보 조회
         //kakao user info : id, email, nickname
-        KakaoUserInfo userInfo = kakaoOAuth2.getUserInfo(code);
+        KakaoUserInfo userInfo = kakaoOAuth2.getUserInfo(authorizedCode);
         Long kakaoId = userInfo.getId();
         String nickname = userInfo.getNickname();
         String email = userInfo.getEmail();
@@ -168,7 +168,6 @@ public class UserService {
         //패스워드 == 카카오 id + admin token  //==비밀번호 저장 방법 찾기==//
 //        String password = kakaoId + ADMIN_TOKEN;
         String password = kakaoId + myConfigurationProperties.getAdminToken();
-        log.info("here!!! admin token = {}", myConfigurationProperties.getAdminToken());
 
         //우리 DB에 중복된 Kakao Id 가 있는지 확인
         User kakaoUser = userRepository.findByKakaoId(kakaoId)
@@ -192,6 +191,7 @@ public class UserService {
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(kakaoUser.getAuthority().toString());
         UserDetails principal = new org.springframework.security.core.userdetails.User(
                 kakaoUser.getUsername(),
+                //password 할 건지, encodedPassword 할 건지 db 에 어떻게 들어가는지 확인할 것
                 kakaoUser.getPassword(),
                 Collections.singleton(grantedAuthority));       //이렇게만 해주면 현재 로그인한 회원에 카카오 유저가 연결이 돼있는 건가?
 
@@ -208,8 +208,6 @@ public class UserService {
                 .build();
 
         refreshTokenRepository.save(refreshToken);
-
-        //프론트에 응답 코드 주기 (tokenDto 넘기면서) -> controller 가서 해야 할 듯
         return tokenDto;
 
     }
