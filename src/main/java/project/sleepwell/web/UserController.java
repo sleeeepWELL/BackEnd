@@ -15,10 +15,7 @@ import project.sleepwell.kakaologin.KakaoOAuth2;
 import project.sleepwell.kakaologin.KakaoService;
 import project.sleepwell.service.UserService;
 import project.sleepwell.util.SecurityUtil;
-import project.sleepwell.web.dto.LoginDto;
-import project.sleepwell.web.dto.SignupRequestDto;
-import project.sleepwell.web.dto.TokenDto;
-import project.sleepwell.web.dto.TokenRequestDto;
+import project.sleepwell.web.dto.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -87,19 +84,19 @@ public class UserController {
     //정주님 -> 서버에 코드 보내주는 api
     //토큰 콜백: http://localhost:8080/oauth/callback/kakao
     //codeRequestDto
-//    @PostMapping("/oauth/callback/kakao")
-//    public ResponseEntity<TokenDto> kakaoLogin(@RequestBody String authorizedCode) {
-//        TokenDto tokenDto = kakaoService.kakaoLogin(authorizedCode);
-//        return ResponseEntity.ok(tokenDto);
-//    }
+    @RequestMapping("/oauth/callback/kakao")
+    public ResponseEntity<TokenDto> kakaoLogin(@RequestBody String authorizedCode) {
+        TokenDto tokenDto = kakaoService.kakaoLogin(authorizedCode);
+        return ResponseEntity.ok(tokenDto);
+    }
 
     //임시 테스트용 (서버에서 전부 리다이렉트 받는 경우. 브라우저로 테스트 해서 결과 보기 위함)-> 성공
     //POST 메서드로 하니까 못 받네. 405 에러
-    @GetMapping("/oauth/callback/kakao")
-    public ResponseEntity<TokenDto> kakaoLogin(String code) {
-        TokenDto tokenDto = kakaoService.kakaoLogin(code);
-        return ResponseEntity.ok(tokenDto);
-    }
+//    @GetMapping("/oauth/callback/kakao")
+//    public ResponseEntity<TokenDto> kakaoLogin(String code) {
+//        TokenDto tokenDto = kakaoService.kakaoLogin(code);
+//        return ResponseEntity.ok(tokenDto);
+//    }
 
 
 //    @RequestMapping("/oauth/callback/kakao")
