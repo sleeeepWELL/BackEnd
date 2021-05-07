@@ -51,7 +51,6 @@ public class UserService {
 
     private final KakaoOAuth2 kakaoOAuth2;
     private final AuthenticationManager authenticationManager;
-//    private static final String ADMIN_TOKEN = "sample1234asdf";
 
     private final CardsRepository cardRepository;
 
