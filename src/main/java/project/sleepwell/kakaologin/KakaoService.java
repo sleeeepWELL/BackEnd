@@ -85,8 +85,8 @@ public class KakaoService {
 
 
     //카카오 테스트
-    public TokenDto kakaoLogin(String authorizedCode) {
-        KakaoUserInfo kakaoUserInfo = kakaoOAuth2.getUserInfo(authorizedCode);
+    public TokenDto kakaoLogin(String code) {
+        KakaoUserInfo kakaoUserInfo = kakaoOAuth2.getUserInfo(code);
         Long kakaoId = kakaoUserInfo.getId();
         String nickname = kakaoUserInfo.getNickname();
         String email = kakaoUserInfo.getEmail();

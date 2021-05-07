@@ -2,6 +2,7 @@ package project.sleepwell.web;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,10 +16,7 @@ import project.sleepwell.kakaologin.KakaoOAuth2;
 import project.sleepwell.kakaologin.KakaoService;
 import project.sleepwell.service.UserService;
 import project.sleepwell.util.SecurityUtil;
-import project.sleepwell.web.dto.LoginDto;
-import project.sleepwell.web.dto.SignupRequestDto;
-import project.sleepwell.web.dto.TokenDto;
-import project.sleepwell.web.dto.TokenRequestDto;
+import project.sleepwell.web.dto.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
@@ -28,6 +26,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Map;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 public class UserController {
@@ -83,23 +82,36 @@ public class UserController {
 //        return ResponseEntity.ok(userService.login(loginDto));  //token 발행
     }
 
-    //테스트
-    //정주님 -> 서버에 코드 보내주는 api
-    //토큰 콜백: http://localhost:8080/oauth/callback/kakao
-    //codeRequestDto
-//    @PostMapping("/oauth/callback/kakao")
-//    public ResponseEntity<TokenDto> kakaoLogin(@RequestBody String authorizedCode) {
-//        TokenDto tokenDto = kakaoService.kakaoLogin(authorizedCode);
+    /**
+     * 정주님이랑 하는 테스트
+     * @param code
+     * @return
+     */
+//    @RequestMapping("/oauth/callback/kakao")
+//    public ResponseEntity<TokenDto> kakaoLogin(@RequestBody String code) {
+//        log.info("프론트에서 받은 코드 = {}", code);
+//        TokenDto tokenDto = kakaoService.kakaoLogin(code);      //오류 터지는 게 이 지점인데
 //        return ResponseEntity.ok(tokenDto);
 //    }
 
-    //임시 테스트용 (서버에서 전부 리다이렉트 받는 경우. 브라우저로 테스트 해서 결과 보기 위함)-> 성공
-    //POST 메서드로 하니까 못 받네. 405 에러
-    @GetMapping("/oauth/callback/kakao")
-    public ResponseEntity<TokenDto> kakaoLogin(String code) {
-        TokenDto tokenDto = kakaoService.kakaoLogin(code);
+    @RequestMapping("/oauth/callback/kakao")
+    public ResponseEntity<TokenDto> kakaoLogin(@RequestParam String code) {
+        log.info("프론트에서 받은 코드 = {}", code);
+        TokenDto tokenDto = kakaoService.kakaoLogin(code);      //오류 터지는 게 이 지점인데
         return ResponseEntity.ok(tokenDto);
     }
+
+    /**
+     * 혼자 하는 테스트
+     * POST 메서드로 하니까 못 받네. 405 에러
+     * @param code
+     * @return
+     */
+//    @GetMapping("/oauth/callback/kakao")
+//    public ResponseEntity<TokenDto> kakaoLogin(String code) {
+//        TokenDto tokenDto = kakaoService.kakaoLogin(code);
+//        return ResponseEntity.ok(tokenDto);
+//    }
 
 
 //    @RequestMapping("/oauth/callback/kakao")

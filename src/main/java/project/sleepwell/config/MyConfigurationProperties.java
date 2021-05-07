@@ -18,6 +18,7 @@ public class MyConfigurationProperties {
 
     private String baseUrl;
     private String loginUrl;
+    private String clientSecret;
 
 
 }

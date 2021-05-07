@@ -1,5 +1,6 @@
 package project.sleepwell.kakaologin;
 
+import lombok.extern.slf4j.Slf4j;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
@@ -11,11 +12,13 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import project.sleepwell.config.MyConfigurationProperties;
+import project.sleepwell.web.dto.CodeRequestDto;
 
 /**
  * authorize_code 로 카카오 서버에 access token 받아올 메서드
  * 방법 1. HTTP header, body 이용
  */
+@Slf4j
 @Component
 public class KakaoOAuth2 {
 
@@ -23,9 +26,11 @@ public class KakaoOAuth2 {
     MyConfigurationProperties myConfigurationProperties;
 
     //인가 코드로 토큰 요청 -> 사용자 정보 요청
-    public KakaoUserInfo getUserInfo(String authorizedCode) {
+    public KakaoUserInfo getUserInfo(String code) {
+        log.info("프론트에서 받은 코드(getUserInfo 메서드) = {}", code);
+
         //1.인가코드 -> 액세스 토큰
-        String accessToken = getAccessToken(authorizedCode);
+        String accessToken = getAccessToken(code);
         //2.액세스 토큰 -> 카카오 사용자 정보
         KakaoUserInfo userInfo = getUserInfoByToken(accessToken);
         return userInfo;
@@ -39,28 +44,26 @@ public class KakaoOAuth2 {
     }
 
 
-    //토큰으로 카카오 유저 정보 가져오기
-//    public KakaoUserInfo getUserInfo(String token) {
-//        //2.액세스 토큰 -> 카카오 사용자 정보
-//        KakaoUserInfo userInfo = getUserInfoByToken(token);
-//
-//        return userInfo;
-//    }
-
     //방법 2 -> 프론트에서 백으로 코드를 넘겨줌
-    private String getAccessToken(String authorizedCode) {
+    private String getAccessToken(String code) {
+        log.info("프론트에서 받은 코드(getAccessToken 메서드) = {}", code);
         //HttpHeader 오브젝트 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
+//        headers.add("Content-type", "application/json;charset=utf-8");
 
         //HttpBody 오브젝트 생성
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", myConfigurationProperties.getClientId());
-//        params.add("redirect_uri", "http://localhost:3000/oauth/callback/kakao");
-//        params.add("redirect_uri", "http://54.180.79.156/oauth/callback/kakao");
-        params.add("redirect_uri", "http://localhost:8080/oauth/callback/kakao");
-        params.add("code", authorizedCode);
+        params.add("redirect_uri", "http://localhost:3000/oauth/callback/kakao");
+//        params.add("redirect_uri", "http://localhost:8080/oauth/callback/kakao");
+        params.add("code", code);
+        params.add("client_secret", myConfigurationProperties.getClientSecret());
+
+        log.info("HttpBody 오브젝트 생성 후 ={}", code);
+        log.info("client id 불러온 것: {}", myConfigurationProperties.getClientId());
+//        log.info("client secret 불러온 것: {}", myConfigurationProperties.getClientSecret());
 
 
         //HttpHeader 와 HttpBody 를 하나의 오브젝트에 담기
@@ -74,6 +77,8 @@ public class KakaoOAuth2 {
                 kakaoTokenRequest,
                 String.class
         );
+
+        log.info("카카오에 토큰 요청, response = {}", response);
 
         /**
          *요청 성공 시, 응답은 JSON 객체로 Redirect URI 에 전달되며 두 가지 종류의
