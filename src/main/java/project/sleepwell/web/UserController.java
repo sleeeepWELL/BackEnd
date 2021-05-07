@@ -48,13 +48,12 @@ public class UserController {
         return user;
     }
 
-    @GetMapping("/test/authentication/test")
-    public User authTest(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
+    @GetMapping("/username")
+    public String authTest(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
         User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("There is nobody by that name.")
         );
-
-        return user;
+        return user.getUsername();
     }
 
     @GetMapping("/test")
@@ -97,7 +96,7 @@ public class UserController {
     @RequestMapping("/oauth/callback/kakao")
     public ResponseEntity<TokenDto> kakaoLogin(@RequestParam String code) {
         log.info("프론트에서 받은 코드 = {}", code);
-        TokenDto tokenDto = kakaoService.kakaoLogin(code);      //오류 터지는 게 이 지점인데
+        TokenDto tokenDto = kakaoService.kakaoLogin(code);
         return ResponseEntity.ok(tokenDto);
     }
 

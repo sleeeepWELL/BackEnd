@@ -12,7 +12,6 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import project.sleepwell.config.MyConfigurationProperties;
-import project.sleepwell.web.dto.CodeRequestDto;
 
 /**
  * authorize_code 로 카카오 서버에 access token 받아올 메서드
@@ -56,8 +55,9 @@ public class KakaoOAuth2 {
         MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
         params.add("grant_type", "authorization_code");
         params.add("client_id", myConfigurationProperties.getClientId());
-        params.add("redirect_uri", "http://localhost:3000/oauth/callback/kakao");
+//        params.add("redirect_uri", "http://localhost:3000/oauth/callback/kakao");
 //        params.add("redirect_uri", "http://localhost:8080/oauth/callback/kakao");
+        params.add("redirect_uri", "http://sleepwell.com.s3-website.ap-northeast-2.amazonaws.com/oauth/callback/kakao");
         params.add("code", code);
         params.add("client_secret", myConfigurationProperties.getClientSecret());
 

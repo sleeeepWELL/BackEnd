@@ -60,12 +60,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/api/login").permitAll()
-                .antMatchers("/api/login/code").permitAll()     //응답 코드 테스트용
-                .antMatchers("/kakaoLogin").permitAll()
+//                .antMatchers("/api/login/code").permitAll()     //응답 코드 테스트용
+//                .antMatchers("/kakaoLogin").permitAll()
+                //서버에서 하는 테스트용
                 .antMatchers("/oauth/kakao").permitAll()
                 .antMatchers("/oauth/callback/kakao").permitAll()
                 .antMatchers(HttpMethod.POST, "/oauth/callback/kakao").permitAll()
-                .antMatchers("/authorize/code").permitAll();
+                .antMatchers("/authorize/code").permitAll()
+                .antMatchers("/username").permitAll();
+
 
 
 
