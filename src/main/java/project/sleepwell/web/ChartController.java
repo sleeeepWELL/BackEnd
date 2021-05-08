@@ -18,13 +18,13 @@ public class ChartController {
     private final ChartService chartService;
 
     // 컨디션 2보다 높은 Total sleep 찾기 -> 마지막 추천 문구
-    @GetMapping("/yourSleepTime")
+    @GetMapping("/chart/yourSleepTime")
     public List<Integer> yourSleepTimeByConditions(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
         return chartService.yoursleeptimebyconditions(principal);
     }
 
     // 오늘을 기준으로 주간,월간 태그의 빈도수 구하기 그래프
-    @GetMapping("/barChart/{today}")
+    @GetMapping("/chart/barChart/{today}")
     public List<List<Integer>> tagBarChart (@PathVariable("today") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate today, @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
         return chartService.tagbarchart(today,principal);
     }

@@ -29,7 +29,7 @@ public class CardsRestController {
 //    }
 
     //내 캘린더 조회
-    @GetMapping("/calendars")
+    @GetMapping("/cards/calendars")
     public List<Cards> getMyCalendars(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
         return cardsService.getMyCalendars(principal);
     }
