@@ -8,8 +8,8 @@ import project.sleepwell.domain.user.User;
 import project.sleepwell.domain.user.UserRepository;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -87,21 +87,16 @@ public class ChartService {
         return totalSleeptime;
     }
 
-
+    //주간, 월간 태그 빈도수 -> 막대그래프
     public List<List<Integer>> tagbarchart(LocalDate today, org.springframework.security.core.userdetails.User principal){
         User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("nothing")
         );
 
+        //주간 데이터
         LocalDate weekly = today.minusDays(7L);
-        LocalDate monthly = today.minusDays(30L);
         List<Cards> weeklyCards = cardsRepository.findCardsBySelectedAtIsAfterAndUser(weekly,user);
-        List<Cards> monthlyCards = cardsRepository.findCardsBySelectedAtIsAfterAndUser(monthly,user);
-
         List<Integer> weeklytags= new ArrayList<>();
-        List<Integer> monthlytags= new ArrayList<>();
-        List<List<Integer>> tag = new ArrayList<>();
-
 
         Integer tagExerciseWeekly = 0;
         Integer tagDrinkWeekly = 0;
@@ -131,6 +126,11 @@ public class ChartService {
         weeklytags.add(tagmdSnackWeekly);
         weeklytags.add(7);
 
+        // 월간 데이터
+        LocalDate monthly = today.minusDays(30L);
+        List<Cards> monthlyCards = cardsRepository.findCardsBySelectedAtIsAfterAndUser(monthly,user);
+        List<Integer> monthlytags= new ArrayList<>();
+
         Integer tagExerciseMonthly = 0;
         Integer tagDrinkMonthly = 0;
         Integer tagNightMonthly = 0;
@@ -152,17 +152,39 @@ public class ChartService {
                 }
             }
         }
-
         monthlytags.add(tagExerciseMonthly);
         monthlytags.add(tagDrinkMonthly);
         monthlytags.add(tagNightMonthly);
         monthlytags.add(tagmdSnackMonthly);
         monthlytags.add(30);
 
+        List<List<Integer>> tag = new ArrayList<>();
         tag.add(weeklytags);
         tag.add(monthlytags);
 
         return tag;
+    }
+
+    // 기록한 날짜 + 컨디션 나타내는 잔디 심기 차트 = 깃헙
+    public List<Map<String,Object>> grassChart(org.springframework.security.core.userdetails.User principal) {
+        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("nothing")
+        );
+
+        List<Cards> cards = cardsRepository.findCardsByUser(user);
+        List<Map<String,Object>> grassList = new ArrayList<>();
+
+        for (int i = 0; i < cards.size(); i++){
+            Map<String,Object> grass = new LinkedHashMap<>();
+            LocalDate selectedAt = cards.get(i).getSelectedAt();
+            String day = selectedAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
+            Long conditions = cards.get(i).getConditions();
+            grass.put("day",day);
+            grass.put("value",conditions);
+            grassList.add(grass);
+        }
+
+        return grassList;
     }
 
 }

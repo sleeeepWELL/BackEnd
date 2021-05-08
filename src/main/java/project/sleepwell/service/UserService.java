@@ -1,12 +1,8 @@
 package project.sleepwell.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
@@ -18,13 +14,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import project.sleepwell.config.MyConfigurationProperties;
-import project.sleepwell.domain.cards.CardsRepository;
 import project.sleepwell.domain.refreshtoken.RefreshToken;
 import project.sleepwell.domain.refreshtoken.RefreshTokenRepository;
 import project.sleepwell.domain.user.Authority;
 import project.sleepwell.domain.user.User;
 import project.sleepwell.domain.user.UserRepository;
-import project.sleepwell.jwt.JwtFilter;
 import project.sleepwell.jwt.JwtTokenProvider;
 import project.sleepwell.kakaologin.KakaoOAuth2;
 import project.sleepwell.kakaologin.KakaoUserInfo;
@@ -33,8 +27,6 @@ import project.sleepwell.web.dto.SignupRequestDto;
 import project.sleepwell.web.dto.TokenDto;
 import project.sleepwell.web.dto.TokenRequestDto;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.util.Collections;
 
 @Slf4j
@@ -50,9 +42,6 @@ public class UserService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final KakaoOAuth2 kakaoOAuth2;
-    private final AuthenticationManager authenticationManager;
-
-    private final CardsRepository cardRepository;
 
     @Autowired
     MyConfigurationProperties myConfigurationProperties;
