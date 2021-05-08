@@ -36,6 +36,8 @@ import project.sleepwell.web.dto.TokenRequestDto;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -209,6 +211,11 @@ public class UserService {
         refreshTokenRepository.save(refreshToken);
         return tokenDto;
 
+    }
+
+    @Transactional(readOnly = true)
+    public boolean checkUsername(String username) {
+        return userRepository.existsByUsername(username);
     }
 
     //1.

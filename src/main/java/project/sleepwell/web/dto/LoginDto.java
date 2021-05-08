@@ -14,8 +14,6 @@ public class LoginDto {
     private String password;
 
     public UsernamePasswordAuthenticationToken toAuthentication() {
-        //Object principal, Object credentials
-        //username == email
         return new UsernamePasswordAuthenticationToken(email, password);
     }
 }
