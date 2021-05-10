@@ -47,9 +47,8 @@ public class JwtTokenProvider {
 
         long now = (new Date()).getTime();
 
-        //Access Token  **getName 에 userId -> username (custom 에서 설정) =====//
         //유저 정보와 권한 정보 담기
-        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);   //현재 시간 + 30분간
+        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken = Jwts.builder()
                 .setSubject(authentication.getName())       //"sub" :  username
                 .claim(AUTHORITIES_KEY, authorities)        //"auth" : "ROLE_USER"
@@ -59,7 +58,6 @@ public class JwtTokenProvider {
         log.info("authentication.getName() = {}", authentication.getName());
 
         //Refresh Token
-        //아무 정보도 담지 않음
         String refreshToken = Jwts.builder()
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
                 .signWith(key, SignatureAlgorithm.HS512)
@@ -71,7 +69,6 @@ public class JwtTokenProvider {
                 .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
                 .refreshToken(refreshToken)
                 .build();
-        //**getTime
     }
 
     //accessToken 에 있는 정보를 이용해서 Authentication 객체 리턴
@@ -91,7 +88,7 @@ public class JwtTokenProvider {
                 .collect(Collectors.toList());
 
         UserDetails principal = new User(claims.getSubject(), "", authorities);
-        log.info("principal = {}", principal);
+        log.info("principal = {}", principal.toString());
 
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
