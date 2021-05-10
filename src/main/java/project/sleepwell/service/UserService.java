@@ -46,6 +46,7 @@ public class UserService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     private final KakaoOAuth2 kakaoOAuth2;
+
     private final AuthenticationManager authenticationManager;
 
     private final CardsRepository cardRepository;
