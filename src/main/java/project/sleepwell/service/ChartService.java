@@ -77,8 +77,11 @@ public class ChartService {
             }
         }
 
+        // [3카드],[3카드],[3카드],[3카드],[3카드],[4카드],[4카드],[4카드],[5카드],[5카드],[5카드],[5카드],[5카드]
+        // 3카드*5+4카드*3+5카드*5/1*5+2*3+3*5
+
         try {
-            totaltime /= ((sleeptimes03.size() / 2)+sleeptimes04.size()+(sleeptimes05.size() / 2));
+            totaltime /= ((sleeptimes03.size() / 2)+sleeptimes04.size()+(3* sleeptimes05.size() / 2));
         }catch (ArithmeticException e){
             List<Integer> zero = new ArrayList<>();
             return zero;
