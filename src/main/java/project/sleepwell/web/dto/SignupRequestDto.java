@@ -33,9 +33,4 @@ public class SignupRequestDto {
                 .build();
     }
 
-//    public UsernamePasswordAuthenticationToken toAuthentication() {
-//        //Object principal, Object credentials
-//        return new UsernamePasswordAuthenticationToken(email, password);
-//    }
-
 }

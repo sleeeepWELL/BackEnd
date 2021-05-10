@@ -1,4 +1,4 @@
-package project.sleepwell.domain.user;
+package project.sleepwell.domain.email;
 
 public class CertificationNumberMismatchException extends RuntimeException {
 

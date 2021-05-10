@@ -1,30 +1,24 @@
 package project.sleepwell.web;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import project.sleepwell.analisys.LineChartService;
 import project.sleepwell.config.MyConfigurationProperties;
-import project.sleepwell.domain.user.Message;
-import project.sleepwell.domain.user.StatusEnum;
+import project.sleepwell.analisys.LineChartResponseDto;
 import project.sleepwell.domain.user.User;
-import project.sleepwell.domain.user.UserRepository;
-import project.sleepwell.kakaologin.KakaoOAuth2;
 import project.sleepwell.kakaologin.KakaoService;
 import project.sleepwell.service.UserService;
 import project.sleepwell.util.SecurityUtil;
 import project.sleepwell.web.dto.*;
-
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import javax.xml.ws.Response;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.Map;
+import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,66 +26,41 @@ import java.util.Map;
 public class UserController {
 
     private final UserService userService;
-    private final KakaoOAuth2 kakaoOAuth2;
-    private final UserRepository userRepository;
     private final KakaoService kakaoService;
+    private final LineChartService lineChartService;
 
     @Autowired
     MyConfigurationProperties myConfigurationProperties;
 
-    ////////////////////////////
-    //현재 로그인 하고 들어온 유저의 정보 뽑기 (테스트용. 개발자용) -> 성공 -> SecurityUtil 바꿔서 안먹힘. 고쳐서 써먹어보자.
-    @GetMapping("/test/users")
-    public User getUserInfo() {
-        Long userId = SecurityUtil.getCurrentUserId();
-        User user = userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("nothing"));
-        return user;
+
+    //심각한 테스트
+    @GetMapping("/allUsers")
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
     }
 
+    //현재 로그인 한 user 의 username 조회
     @GetMapping("/username")
-    public String authTest(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("There is nobody by that name.")
-        );
-        return user.getUsername();
+    public String getUsername() {
+        return SecurityUtil.getCurrentUsername();
     }
 
-    @GetMapping("/test")
-    public String test() {
-        return "test: success.";
+    //username 중복 체크
+    @GetMapping("/username/{username}")
+    public ResponseEntity<Boolean> checkUsername(@PathVariable String username) {
+        return ResponseEntity.ok(userService.checkUsername(username));
     }
 
-    @GetMapping("/only/user")
-    public String testUser() {
-        return "권한 있는 사람만 보이는 메세지. only user can read.";
-    }
 
-    //email, username, password
     @PostMapping("/signup")
     public Long createUser(@Valid @RequestBody SignupRequestDto signupRequestDto) {
         return userService.createUser(signupRequestDto);
     }
 
-    //login
     @PostMapping("/api/login")
     public ResponseEntity<TokenDto> login(@Valid @RequestBody LoginDto loginDto) {
-        TokenDto tokenDto = userService.login(loginDto);
-        return ResponseEntity.ok(tokenDto);
-
-//        return ResponseEntity.ok(userService.login(loginDto));  //token 발행
+        return ResponseEntity.ok(userService.login(loginDto));
     }
-
-    /**
-     * 정주님이랑 하는 테스트
-     * @param code
-     * @return
-     */
-//    @RequestMapping("/oauth/callback/kakao")
-//    public ResponseEntity<TokenDto> kakaoLogin(@RequestBody String code) {
-//        log.info("프론트에서 받은 코드 = {}", code);
-//        TokenDto tokenDto = kakaoService.kakaoLogin(code);      //오류 터지는 게 이 지점인데
-//        return ResponseEntity.ok(tokenDto);
-//    }
 
     @RequestMapping("/oauth/callback/kakao")
     public ResponseEntity<TokenDto> kakaoLogin(@RequestParam String code) {
@@ -103,111 +72,20 @@ public class UserController {
     /**
      * 혼자 하는 테스트
      * POST 메서드로 하니까 못 받네. 405 에러
-     * @param code
-     * @return
      */
 //    @GetMapping("/oauth/callback/kakao")
 //    public ResponseEntity<TokenDto> kakaoLogin(String code) {
 //        TokenDto tokenDto = kakaoService.kakaoLogin(code);
 //        return ResponseEntity.ok(tokenDto);
 //    }
-
-
-//    @RequestMapping("/oauth/callback/kakao")
-//    public TokenDto kakaoLogin(String code, Red) throws IOException {
-//        TokenDto tokenDto = userService.kakaoLogin(code);
-//        //default status == bad request.
-////        Message message = new Message();
-////        HttpHeaders headers = new HttpHeaders();
-////        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//
-//
-////        message.setStatus(StatusEnum.OK);
-////        message.setMessage("kakaoLoginSuccessCode");
-////        message.setData(tokenDto);
-//
-////        headers.add("accessToken", tokenDto.getAccessToken());
-//        return tokenDto;
-////        response.sendRedirect("https://www.cami.kr/");
-//    }
-
-
-    //테스트 용
-//    @PostMapping("/api/login")
-//    public ResponseEntity<String> login(@Valid @RequestBody LoginDto loginDto, HttpServletResponse response) throws IOException {
-//        userService.login(loginDto, response);  //token 발행
-//        return ResponseEntity.ok().body("ok");
-//    }
-
-    //login - client code test
-//    @PostMapping("/api/login/code")
-//    public ResponseEntity<Message> loginCode(@Valid @RequestBody LoginDto loginDto) throws JsonProcessingException {
-//        TokenDto tokenDto = userService.login(loginDto);
-//        Message message = new Message();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//
-//        message.setStatus(StatusEnum.OK);
-//        message.setMessage("kakaoLoginSuccessCode");
-//        message.setData(tokenDto);
-//
-//        return new ResponseEntity<>(message, headers, HttpStatus.ACCEPTED);
-//    }
-
-    //callback 받는 URI
-    /**
-     * 프론트에서 로그인 요청(oauth/authorize?) -> 로그인 후 동의 ->
-     * 카카오 Authorization Server 는 이 uri 에 code 값을 넘겨줄 것이다.
-     * code 값으로 token 요청
-     */
-//    @RequestMapping("/kakaoLogin")  //get mapping
-//    public ResponseEntity<Message> kakaoLogin(@RequestParam String code) {
-//        TokenDto tokenDto = userService.kakaoLogin(code);
-//        //default status == bad request.
-//        Message message = new Message();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//
-//        message.setStatus(StatusEnum.OK);
-//        message.setMessage("kakaoLoginSuccessCode");
-//        message.setData(tokenDto);
-//
-//        return new ResponseEntity<>(message, headers, HttpStatus.OK);
-//    }
-
-    //1.
-    //프론트에서 토큰까지 받아서 서버로 토큰 넘겨준다면 (동의하고 계속하기 버튼 누르면서 token 같이 넘겨주면 서버에서 받는다.)
-//    @RequestMapping("/kakaoLogin")  //get mapping
-//    public ResponseEntity<Message> kakaoLogin(@RequestBody Map<String, Object> token) {
-//        TokenDto tokenDto = userService.kakaoLogin(token.get("keyFromFront").toString());
-//
-//        //default status == bad request.
-//        Message message = new Message();
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-//
-//        message.setStatus(StatusEnum.OK);
-//        message.setMessage("kakaoLoginSuccessCode");
-//        message.setData(tokenDto);
-//
-//        return new ResponseEntity<>(message, headers, HttpStatus.OK);
-//    }
-
-
     @PostMapping("/reissue")
     public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
         return ResponseEntity.ok(userService.reissue(tokenRequestDto));
     }
 
-
-//    @GetMapping("/mypage")
-//    public ResponseEntity<UserResponseDto> getMyInfo() {    //email 만 반환
-//        return ResponseEntity.ok(userService.getMyInfo());
-//    }
-
-    //아직 쓸 데 없음
-//    @GetMapping("/{email}")
-//    public ResponseEntity<UserResponseDto> getUserInfo(@PathVariable String email) {
-//        return ResponseEntity.ok(userService.getUserInfo(email));
-//    }
+    @GetMapping("/chart/lineChart/{today}")
+    public List<LineChartResponseDto> compareToSleeptime(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate today,
+                                                         @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
+        return lineChartService.compareToSleeptime(today, principal);
+    }
 }
