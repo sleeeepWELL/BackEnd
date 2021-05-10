@@ -4,14 +4,21 @@ package project.sleepwell.web;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import project.sleepwell.analisys.LineChartService;
 import project.sleepwell.config.MyConfigurationProperties;
+import project.sleepwell.analisys.LineChartResponseDto;
+import project.sleepwell.domain.user.User;
 import project.sleepwell.kakaologin.KakaoService;
 import project.sleepwell.service.UserService;
 import project.sleepwell.util.SecurityUtil;
 import project.sleepwell.web.dto.*;
 import javax.validation.Valid;
+import java.time.LocalDate;
+import java.util.List;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -20,10 +27,19 @@ public class UserController {
 
     private final UserService userService;
     private final KakaoService kakaoService;
+    private final LineChartService lineChartService;
 
     @Autowired
     MyConfigurationProperties myConfigurationProperties;
 
+
+    //심각한 테스트
+    @GetMapping("/allUsers")
+    public List<User> getAllUsers() {
+        return userService.getAllUsers();
+    }
+
+    //현재 로그인 한 user 의 username 조회
     @GetMapping("/username")
     public String getUsername() {
         return SecurityUtil.getCurrentUsername();
@@ -62,11 +78,14 @@ public class UserController {
 //        TokenDto tokenDto = kakaoService.kakaoLogin(code);
 //        return ResponseEntity.ok(tokenDto);
 //    }
-
-
     @PostMapping("/reissue")
     public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
         return ResponseEntity.ok(userService.reissue(tokenRequestDto));
     }
 
+    @GetMapping("/chart/lineChart/{today}")
+    public List<LineChartResponseDto> compareToSleeptime(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate today,
+                                                         @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
+        return lineChartService.compareToSleeptime(today, principal);
+    }
 }

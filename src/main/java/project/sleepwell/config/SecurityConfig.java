@@ -72,7 +72,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/username/{username}").permitAll()
                 .antMatchers("/email").permitAll()
                 .antMatchers("/email/certification/send").permitAll()
-                .antMatchers("/email/certification/confirm").permitAll();
+                .antMatchers("/email/certification/confirm").permitAll()
+
+                .antMatchers("/chart/lineChart/{today}").permitAll();
 
 
 
