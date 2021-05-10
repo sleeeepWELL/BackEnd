@@ -12,10 +12,7 @@ import project.sleepwell.web.dto.LineChartResponseDto;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -300,9 +297,10 @@ public class ChartService {
             LineChartResponseDto lineChartResponseDto = new LineChartResponseDto(date, totalTime, adequateSleepTime);
             lineChart.add(lineChartResponseDto);
 
+            Collections.sort(lineChart, (a,b) ->a.getDate().compareTo(b.getDate()));
+
         }
         return lineChart;
-
 
     }
 
