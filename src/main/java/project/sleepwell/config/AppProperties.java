@@ -7,7 +7,7 @@ import java.util.List;
 
 
 @Getter
-@ConfigurationProperties(prefix = "app")
+//@ConfigurationProperties(prefix = "app")
 public class AppProperties {        //binding 하기
 
     private final OAuth oauth = new OAuth();

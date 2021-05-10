@@ -2,10 +2,8 @@ package project.sleepwell.domain.user;
 
 import lombok.Data;
 
-/**
- * 클라이언트에게 응답 보내기 위해서 만듦
- * 상태코드, 메세지, 데이터
- */
+
+// 클라이언트에게 응답 보내기 위해서 만듦 (상태코드, 메세지, 데이터)
 @Data
 public class Message {
 

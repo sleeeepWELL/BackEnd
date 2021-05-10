@@ -29,4 +29,10 @@ public interface CardsRepository extends JpaRepository<Cards, Long> { // <Entity
     // 유저별 태그의 빈도수 조회
     List<Cards> findCardsBySelectedAtIsAfterAndUser(LocalDate today, User user);
 
+
+    //한 주간의 카드 조회. 최대 카드 갯수 : 7개
+    List<Cards> findCardsBySelectedAtBetweenAndUser(LocalDate start, LocalDate end, User user);
+
+    List<Cards> findCardsByConditionsGreaterThanAndSelectedAtBeforeAndUserEquals(Long conNum, LocalDate today, User user);
+
 }

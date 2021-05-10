@@ -36,14 +36,12 @@ public class JwtTokenProvider {
 
     public JwtTokenProvider(@Value("${my-config.secret-key}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
-        log.info("secret key = {}", secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
     //authentication = principal, credential, authority
     //유저 정보 넘겨받아서 Access Token + Refresh Token 만들기
     public TokenDto generateTokenDto(Authentication authentication) {
-        //권한 가져오기 (USER, ADMIN)
         String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
@@ -53,7 +51,7 @@ public class JwtTokenProvider {
         //유저 정보와 권한 정보 담기
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);   //현재 시간 + 30분간
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())       //"sub" : "id(String)" -> username
+                .setSubject(authentication.getName())       //"sub" :  username
                 .claim(AUTHORITIES_KEY, authorities)        //"auth" : "ROLE_USER"
                 .setExpiration(accessTokenExpiresIn)        //"exp":"now + 30m"
                 .signWith(key, SignatureAlgorithm.HS512)    //"alg":"HS512"
@@ -91,7 +89,6 @@ public class JwtTokenProvider {
         Collection<? extends GrantedAuthority> authorities = Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
-        log.info("authorities = {}", authorities);
 
         UserDetails principal = new User(claims.getSubject(), "", authorities);
         log.info("principal = {}", principal);

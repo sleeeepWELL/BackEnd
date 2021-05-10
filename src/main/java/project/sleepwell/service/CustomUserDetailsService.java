@@ -22,13 +22,6 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
-    /**
-     * username == email (LoginDto 에서 로그인 한 회원의 username 을 email 로 바꿔서 생성하게 만듦.)
-     * -> new UsernamePasswordAuthenticationToken(email, password);
-     * @param email
-     * @return
-     * @throws UsernameNotFoundException
-     */
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -38,18 +31,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
         return user.map(this::principalDetails)
                     .orElseThrow(() -> new UsernameNotFoundException("데이터베이스에서 찾을 수 없습니다."));
-        //id -> username, password, authority 를 갖고 있는 user
     }
 
-    /**
-     * db 에 User 가 존재하면, 객체 생성
-     * UserDetails 구현한 클래스 만들어도 됨.
-     * 필요에 따라 커스터마이징
-     * spring User setting = username = '(String)id', password = password, authority = authority
-     * spring User setting = username = 'username', password = password, authority = authority
-     * @param user
-     * @return
-     */
+
     private UserDetails principalDetails(User user) {
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(user.getAuthority().toString());
 
