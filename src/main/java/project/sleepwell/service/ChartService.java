@@ -335,7 +335,7 @@ public class ChartService {
                     count4 += 1;
                     Long sleepHour4 = card.getTotalSleepHour();
                     Long sleepMinute4 = card.getTotalSleepMinute();
-                    total += (sleepHour4 * 60) + sleepMinute4;
+                    total += ((sleepHour4 * 60) + sleepMinute4) * 2;
                     System.out.println("total = " + total);
                     break;
 
@@ -343,7 +343,7 @@ public class ChartService {
                     count5 += 1;
                     Long sleepHour5 = card.getTotalSleepHour();
                     Long sleepMinute5 = card.getTotalSleepMinute();
-                    total += (sleepHour5 * 60) + sleepMinute5;
+                    total += ((sleepHour5 * 60) + sleepMinute5) * 3;
                     System.out.println("total = " + total);
                     break;
             }
@@ -354,45 +354,16 @@ public class ChartService {
         log.info("count5 = {}", count5);
 
 
-        double theNumOfCon3 = count3;
-        double theNumOfCon4 = count4;
-        double theNumOfCon5 = count5;
         try {
-            if (count3 == 0) {
-                theNumOfCon3 = 0;
-                System.out.println("theNumOfCon3 = " + theNumOfCon3);;
-            } else if (count3 > 0) {
-                theNumOfCon3 = theNumOfCon3 / 2 ;
-                System.out.println("theNumOfCon3 = " + theNumOfCon3);
-            }
+            total /= count3 + (count4 * 2L) + (count5 * 3L);
+            double adqSleeptime = Math.floor((total / 60.0) * 10) / 10;
+            log.info("적정 수면시간 = {} ", adqSleeptime);
 
-            if (count5 == 0) {
-                theNumOfCon5 = 0;
-                System.out.println("theNumOfCon5 = " + theNumOfCon5);
-            } else if (count5 > 0) {
-                theNumOfCon5 = (theNumOfCon5 * 3) / 2;
-                System.out.println("theNumOfCon5 = " + theNumOfCon5);
-            }
-
-            System.out.println("theNumOfCon4 = " + theNumOfCon4);
-
-            double conditions = theNumOfCon3 + theNumOfCon4 + theNumOfCon5;
-
-            log.info("count3 갯수={}, count4 갯수 = {}, count5 갯수 = {}", count3, count4, count5);
-            log.info("conditions = {}", conditions);
-
-            total = (long) (total / conditions);
-            log.info("분을 카드 갯수로 나눴을 때 최종 분 = {}", total);
-
-
-        } catch (ArithmeticException e) {
+            return adqSleeptime;
+        } catch (ArithmeticException e){
             return 0;
         }
 
-        double adqSleeptime = Math.floor((total / 60.0) * 10) / 10;
-        log.info("적정 수면시간 = {} ", adqSleeptime);
-
-        return adqSleeptime;
     }
 
 }
