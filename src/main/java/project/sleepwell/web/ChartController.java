@@ -35,4 +35,9 @@ public class ChartController {
     public List<Map<String,Object>> grassChart (@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
         return chartService.grassChart(principal);
     }
+
+    @GetMapping("/chart/table/{today}")
+    public List<List<Integer>> weeklyTable (@PathVariable("today") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate today, @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
+        return chartService.weeklyTable(today,principal);
+    }
 }

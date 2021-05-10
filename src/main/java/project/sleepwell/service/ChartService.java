@@ -9,7 +9,10 @@ import project.sleepwell.domain.user.UserRepository;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -71,7 +74,7 @@ public class ChartService {
         }
 
         try {
-            totaltime /= ((sleeptimes03.size() / 2)+sleeptimes04.size()+(3* sleeptimes05.size() / 2));
+            totaltime /= ((sleeptimes03.size() / 2)+sleeptimes04.size()+(sleeptimes05.size() / 2));
         }catch (ArithmeticException e){
             List<Integer> zero = new ArrayList<>();
             return zero;
@@ -185,6 +188,69 @@ public class ChartService {
         }
 
         return grassList;
+    }
+
+    // 이번주 수면시간 표
+    public List<List<Integer>> weeklyTable(LocalDate today, org.springframework.security.core.userdetails.User principal) {
+        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("nothing")
+        );
+
+        //주간 데이터
+        LocalDate weekly = today.minusDays(7L);
+        List<Cards> weeklyCards = cardsRepository.findCardsBySelectedAtIsAfterAndUser(weekly, user); // 7일까지의 유저 카드 불러오기
+
+        List<List<Integer>> weeklyTableList = new ArrayList<>();
+
+        List<Integer> weeklyStartSleepList = new ArrayList<>();
+        Integer weeklyStartSleep = 0;
+        List<Integer> weeklyEndSleepList = new ArrayList<>();
+        Integer weeklyEndSleep = 0;
+        List<Integer> weeklyTotalSleepList = new ArrayList<>();
+        Integer weeklyTotalSleep = 0;
+
+        for (int i = 0; i < weeklyCards.size(); i++){
+            Integer startSleepHour = weeklyCards.get(i).getStartSleep().getHour();
+            Integer startSleepMinuite = weeklyCards.get(i).getStartSleep().getMinute();
+
+            weeklyStartSleep += startSleepHour*60 + startSleepMinuite; // 주간 취침 시간 합(분)
+
+            Integer endSleepHour = weeklyCards.get(i).getEndSleep().getHour();
+            Integer endSleepMinuite = weeklyCards.get(i).getEndSleep().getMinute();
+
+            weeklyEndSleep += endSleepHour*60 + endSleepMinuite; // 주간 기상 시간 합(분)
+
+            Integer totalSleepHour = Math.toIntExact(weeklyCards.get(i).getTotalSleepHour());
+            Integer totalSleepMinute = Math.toIntExact(weeklyCards.get(i).getTotalSleepMinute());
+
+            weeklyTotalSleep += totalSleepHour*60 + totalSleepMinute; // 주간 수면 시간 합(분)
+        }
+
+        try {
+            weeklyStartSleepList.add(weeklyStartSleep/weeklyCards.size()/60); // 주간 취침시간(분) -> 시간
+            weeklyStartSleepList.add(weeklyStartSleep/weeklyCards.size()%60); // 주간 취침시간(분) -> 분
+            weeklyTableList.add(weeklyStartSleepList);
+
+            weeklyEndSleepList.add(weeklyEndSleep/weeklyCards.size()/60); // 주간 기상시간(분) -> 시간
+            weeklyEndSleepList.add(weeklyEndSleep/weeklyCards.size()%60); // 주간 기상시간(분) -> 분
+            weeklyTableList.add(weeklyEndSleepList);
+
+            weeklyTotalSleepList.add(weeklyTotalSleep/weeklyCards.size()/60); // 주간 수면시간(분) -> 시간
+            weeklyTotalSleepList.add(weeklyTotalSleep/weeklyCards.size()%60); // 주간 수면시간(분) -> 분
+            weeklyTableList.add(weeklyTotalSleepList);
+
+        }catch (ArithmeticException e){
+            List<Integer> zero = new ArrayList<>();
+            weeklyTableList.add(zero);
+            weeklyTableList.add(zero);
+            weeklyTableList.add(zero);
+            weeklyTableList.add(yoursleeptimebyconditions(principal));
+            return weeklyTableList;
+        }
+
+        weeklyTableList.add(yoursleeptimebyconditions(principal));
+
+        return weeklyTableList;
     }
 
 }
