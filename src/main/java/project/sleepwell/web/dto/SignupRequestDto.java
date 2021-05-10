@@ -23,7 +23,7 @@ public class SignupRequestDto {
     @NotNull
     private String passwordCheck;
 
-    //service 에서 하는 것과 dto 에서 하는 것 차이
+
     public User toUser(PasswordEncoder passwordEncoder) {
         return User.builder()
                 .email(email)

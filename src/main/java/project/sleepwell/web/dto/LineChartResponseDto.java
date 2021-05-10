@@ -1,4 +1,4 @@
-package project.sleepwell.analisys;
+package project.sleepwell.web.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

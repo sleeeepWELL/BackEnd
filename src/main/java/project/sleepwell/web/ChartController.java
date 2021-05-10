@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 import project.sleepwell.service.ChartService;
+import project.sleepwell.web.dto.LineChartResponseDto;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -30,7 +31,7 @@ public class ChartController {
         return chartService.tagbarchart(today,principal);
     }
 
-    // 오늘을 기준으로 주간,월간 태그의 빈도수 구하기 그래프
+
     @GetMapping("/chart/grassChart")
     public List<Map<String,Object>> grassChart (@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
         return chartService.grassChart(principal);
@@ -39,5 +40,13 @@ public class ChartController {
     @GetMapping("/chart/table/{today}")
     public List<List<Integer>> weeklyTable (@PathVariable("today") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate today, @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
         return chartService.weeklyTable(today,principal);
+    }
+
+
+    //주간 - 적정 수면 시간과 나의 수면 시간
+    @GetMapping("/chart/lineChart/{today}")
+    public List<LineChartResponseDto> compareToSleeptime(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate today,
+                                                         @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
+        return chartService.compareToSleeptime(today, principal);
     }
 }
