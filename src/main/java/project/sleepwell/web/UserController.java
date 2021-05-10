@@ -27,7 +27,7 @@ public class UserController {
     MyConfigurationProperties myConfigurationProperties;
 
 
-    //심각한 테스트
+    //정보 조회하기 위해 만들어놓은 메서드
     @GetMapping("/allUsers")
     public List<User> getAllUsers() {
         return userService.getAllUsers();
@@ -72,15 +72,10 @@ public class UserController {
 //        TokenDto tokenDto = kakaoService.kakaoLogin(code);
 //        return ResponseEntity.ok(tokenDto);
 //    }
+
     @PostMapping("/reissue")
     public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
         return ResponseEntity.ok(userService.reissue(tokenRequestDto));
     }
 
-//    //주간 - 적정 수면 시간과 나의 수면 시간
-//    @GetMapping("/chart/lineChart/{today}")
-//    public List<LineChartResponseDto> compareToSleeptime(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate today,
-//                                                         @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-//        return lineChartService.compareToSleeptime(today, principal);
-//    }
 }
