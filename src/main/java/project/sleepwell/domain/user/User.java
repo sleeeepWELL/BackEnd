@@ -19,7 +19,7 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
     @JsonManagedReference
     private List<Cards> cards = new ArrayList<>();
 
