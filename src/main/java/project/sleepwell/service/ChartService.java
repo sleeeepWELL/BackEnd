@@ -22,55 +22,55 @@ public class ChartService {
     private final UserRepository userRepository;
 
     //conditons이 2보다 큰 카드에서 sleeptime을 추출하여 평균 계산 -> 가중평균
-    public List<Integer> yoursleeptimebyconditions(org.springframework.security.core.userdetails.User principal){
+    public List<Integer> yourSleepTimeByConditions(org.springframework.security.core.userdetails.User principal){
         User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("nothing")
         );
         List<Cards> cards = cardsRepository.findCardsByConditionsGreaterThanAndUserEquals(2L,user); //컨디션이 2보다 큰 카드
 
-        List<Long> sleeptimes03 = new ArrayList<>(); //컨디션이 보통인 카드들의 수면 시간, 분을 담을 그릇
-        List<Long> sleeptimes04 = new ArrayList<>(); //컨디션이 좋음인 카드들의 수면 시간, 분을 담을 그릇
-        List<Long> sleeptimes05 = new ArrayList<>(); //컨디션이 매우좋음 카드들의 수면 시간, 분을 담을 그릇
+        List<Long> sleepTime03 = new ArrayList<>(); //컨디션이 보통인 카드들의 수면 시간, 분을 담을 그릇
+        List<Long> sleepTime04 = new ArrayList<>(); //컨디션이 좋음인 카드들의 수면 시간, 분을 담을 그릇
+        List<Long> sleepTime05 = new ArrayList<>(); //컨디션이 매우좋음 카드들의 수면 시간, 분을 담을 그릇
 
         for(int i = 0; i < cards.size(); i++){ //카드의 개수만큼 반복
             if (cards.get(i).getConditions()==3){
-                sleeptimes03.add(cards.get(i).getTotalSleepHour());
-                sleeptimes03.add(cards.get(i).getTotalSleepMinute());
+                sleepTime03.add(cards.get(i).getTotalSleepHour());
+                sleepTime03.add(cards.get(i).getTotalSleepMinute());
             }
             if (cards.get(i).getConditions()==4){
-                sleeptimes04.add(cards.get(i).getTotalSleepHour());
-                sleeptimes04.add(cards.get(i).getTotalSleepMinute());
+                sleepTime04.add(cards.get(i).getTotalSleepHour());
+                sleepTime04.add(cards.get(i).getTotalSleepMinute());
             }
             if (cards.get(i).getConditions()==5){
-                sleeptimes05.add(cards.get(i).getTotalSleepHour());
-                sleeptimes05.add(cards.get(i).getTotalSleepMinute());
+                sleepTime05.add(cards.get(i).getTotalSleepHour());
+                sleepTime05.add(cards.get(i).getTotalSleepMinute());
             }
         }
         // [수면시간, 분, 수면시간, 분, ... ]
 
         int totaltime = 0;
-        for (int i = 0; i < sleeptimes03.size(); i++){
+        for (int i = 0; i < sleepTime03.size(); i++){
             if(i%2==0){
-                totaltime += sleeptimes03.get(i)*60; // 수면시간은 짝수 인덱스 -> 분으로 변환 위해 60 곱
+                totaltime += sleepTime03.get(i)*60; // 수면시간은 짝수 인덱스 -> 분으로 변환 위해 60 곱
             }
             if(i%2!=0){
-                totaltime += sleeptimes03.get(i); // 수면 분은 홀수 인덱스
+                totaltime += sleepTime03.get(i); // 수면 분은 홀수 인덱스
             }
         }
-        for (int i = 0; i < sleeptimes04.size(); i++){
+        for (int i = 0; i < sleepTime04.size(); i++){
             if(i%2==0){
-                totaltime += sleeptimes04.get(i)*60*2;
+                totaltime += sleepTime04.get(i)*60*2;
             }
             if(i%2!=0){
-                totaltime += sleeptimes04.get(i)*2;
+                totaltime += sleepTime04.get(i)*2;
             }
         }
-        for (int i = 0; i < sleeptimes05.size(); i++){
+        for (int i = 0; i < sleepTime05.size(); i++){
             if(i%2==0){
-                totaltime += sleeptimes05.get(i)*60*3;
+                totaltime += sleepTime05.get(i)*60*3;
             }
             if(i%2!=0){
-                totaltime += sleeptimes05.get(i)*3;
+                totaltime += sleepTime05.get(i)*3;
             }
         }
 
@@ -78,7 +78,7 @@ public class ChartService {
         // 3카드*5+4카드*3+5카드*5/1*5+2*3+3*5
 
         try {
-            totaltime /= ((sleeptimes03.size() / 2)+sleeptimes04.size()+(3* sleeptimes05.size() / 2));
+            totaltime /= ((sleepTime03.size() / 2)+sleepTime04.size()+(3* sleepTime05.size() / 2));
         }catch (ArithmeticException e){
             List<Integer> zero = new ArrayList<>();
             return zero;
@@ -87,15 +87,15 @@ public class ChartService {
         int yourSleepHour = totaltime / 60;
         int yourSleepMinute = totaltime % 60;
 
-        List<Integer> totalSleeptime = new ArrayList<>();
-        totalSleeptime.add(yourSleepHour);
-        totalSleeptime.add(yourSleepMinute);
+        List<Integer> yourSleepTime = new ArrayList<>();
+        yourSleepTime.add(yourSleepHour);
+        yourSleepTime.add(yourSleepMinute);
 
-        return totalSleeptime;
+        return yourSleepTime;
     }
 
     //주간, 월간 태그 빈도수 -> 막대그래프
-    public List<List<Integer>> tagbarchart(LocalDate today, org.springframework.security.core.userdetails.User principal){
+    public List<List<Integer>> tagBarChart(LocalDate today, org.springframework.security.core.userdetails.User principal){
         User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("nothing")
         );
@@ -103,12 +103,12 @@ public class ChartService {
         //주간 데이터
         LocalDate weekly = today.minusDays(7L);
         List<Cards> weeklyCards = cardsRepository.findCardsBySelectedAtIsAfterAndUser(weekly,user);
-        List<Integer> weeklytags= new ArrayList<>();
+        List<Integer> weeklyTags= new ArrayList<>();
 
         Integer tagExerciseWeekly = 0;
         Integer tagDrinkWeekly = 0;
         Integer tagNightWeekly = 0;
-        Integer tagmdSnackWeekly = 0;
+        Integer tagMidNightSnackWeekly = 0;
 
         for (int i = 0; i < weeklyCards.size(); i++){
             for (int j = 0; j < weeklyCards.get(i).getTag().size() ; j++){
@@ -122,26 +122,26 @@ public class ChartService {
                     tagNightWeekly += 1;
                 }
                 if (weeklyCards.get(i).getTag().get(j).contains("야식")){
-                    tagmdSnackWeekly += 1;
+                    tagMidNightSnackWeekly += 1;
                 }
             }
         }
 
-        weeklytags.add(tagExerciseWeekly);
-        weeklytags.add(tagDrinkWeekly);
-        weeklytags.add(tagNightWeekly);
-        weeklytags.add(tagmdSnackWeekly);
-        weeklytags.add(7);
+        weeklyTags.add(tagExerciseWeekly);
+        weeklyTags.add(tagDrinkWeekly);
+        weeklyTags.add(tagNightWeekly);
+        weeklyTags.add(tagMidNightSnackWeekly);
+        weeklyTags.add(7);
 
         // 월간 데이터
         LocalDate monthly = today.minusDays(30L);
         List<Cards> monthlyCards = cardsRepository.findCardsBySelectedAtIsAfterAndUser(monthly,user);
-        List<Integer> monthlytags= new ArrayList<>();
+        List<Integer> monthlyTags= new ArrayList<>();
 
         Integer tagExerciseMonthly = 0;
         Integer tagDrinkMonthly = 0;
         Integer tagNightMonthly = 0;
-        Integer tagmdSnackMonthly = 0;
+        Integer tagMidNightSnackMonthly = 0;
 
         for (int i = 0; i < monthlyCards.size(); i++){
             for (int j = 0; j < monthlyCards.get(i).getTag().size() ; j++){
@@ -155,43 +155,44 @@ public class ChartService {
                     tagNightMonthly += 1;
                 }
                 if (monthlyCards.get(i).getTag().get(j).contains("야식")){
-                    tagmdSnackMonthly += 1;
+                    tagMidNightSnackMonthly += 1;
                 }
             }
         }
-        monthlytags.add(tagExerciseMonthly);
-        monthlytags.add(tagDrinkMonthly);
-        monthlytags.add(tagNightMonthly);
-        monthlytags.add(tagmdSnackMonthly);
-        monthlytags.add(30);
+        monthlyTags.add(tagExerciseMonthly);
+        monthlyTags.add(tagDrinkMonthly);
+        monthlyTags.add(tagNightMonthly);
+        monthlyTags.add(tagMidNightSnackMonthly);
+        monthlyTags.add(30);
 
-        List<List<Integer>> tag = new ArrayList<>();
-        tag.add(weeklytags);
-        tag.add(monthlytags);
+        List<List<Integer>> tagCounts = new ArrayList<>();
+        tagCounts.add(weeklyTags);
+        tagCounts.add(monthlyTags);
 
-        return tag;
+        return tagCounts;
     }
 
-    // 기록한 날짜 + 컨디션 나타내는 잔디 심기 차트 = 깃헙
+    // 기록한 날짜 + 컨디션 나타내는 잔디 심기 차트
     public List<Map<String,Object>> grassChart(org.springframework.security.core.userdetails.User principal) {
         User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
                 () -> new IllegalArgumentException("nothing")
         );
 
         List<Cards> cards = cardsRepository.findCardsByUser(user);
-        List<Map<String,Object>> grassList = new ArrayList<>();
+        List<Map<String,Object>> dayOfConditionList = new ArrayList<>();
 
         for (int i = 0; i < cards.size(); i++){
-            Map<String,Object> grass = new LinkedHashMap<>();
+            Map<String,Object> dayOfCondition = new LinkedHashMap<>();
             LocalDate selectedAt = cards.get(i).getSelectedAt();
             String day = selectedAt.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
             Long conditions = cards.get(i).getConditions();
-            grass.put("day",day);
-            grass.put("value",conditions);
-            grassList.add(grass);
+            dayOfCondition.put("day",day);
+            dayOfCondition.put("value",conditions);
+            dayOfConditionList.add(dayOfCondition);
         }
+        // 데이터 형식 - [{"day": 2020-02-02, "value": 3},{...},...]
 
-        return grassList;
+        return dayOfConditionList;
     }
 
     // 이번주 수면시간 표
@@ -204,57 +205,62 @@ public class ChartService {
         LocalDate weekly = today.minusDays(7L);
         List<Cards> weeklyCards = cardsRepository.findCardsBySelectedAtIsAfterAndUser(weekly, user); // 7일까지의 유저 카드 불러오기
 
-        List<List<Integer>> weeklyTableList = new ArrayList<>();
+        //리턴할 그릇
+        List<List<Integer>> weeklyTable = new ArrayList<>();
 
-        List<Integer> weeklyStartSleepList = new ArrayList<>();
-        Integer weeklyStartSleep = 0;
-        List<Integer> weeklyEndSleepList = new ArrayList<>();
-        Integer weeklyEndSleep = 0;
-        List<Integer> weeklyTotalSleepList = new ArrayList<>();
-        Integer weeklyTotalSleep = 0;
+        //항목별 주간 데이터
+        List<Integer> weeklyStartSleep = new ArrayList<>();
+        List<Integer> weeklyEndSleep = new ArrayList<>();
+        List<Integer> weeklyTotalSleep = new ArrayList<>();
+
+        //해당 날짜 데이터
+        Integer StartSleep = 0;
+        Integer EndSleep = 0;
+        Integer TotalSleep = 0;
 
         for (int i = 0; i < weeklyCards.size(); i++){
             Integer startSleepHour = weeklyCards.get(i).getStartSleep().getHour();
-            Integer startSleepMinuite = weeklyCards.get(i).getStartSleep().getMinute();
+            Integer startSleepMinute = weeklyCards.get(i).getStartSleep().getMinute();
 
-            weeklyStartSleep += startSleepHour*60 + startSleepMinuite; // 주간 취침 시간 합(분)
+            StartSleep += startSleepHour*60 + startSleepMinute; // 주간 취침 시간 합(분)
 
             Integer endSleepHour = weeklyCards.get(i).getEndSleep().getHour();
-            Integer endSleepMinuite = weeklyCards.get(i).getEndSleep().getMinute();
+            Integer endSleepMinute = weeklyCards.get(i).getEndSleep().getMinute();
 
-            weeklyEndSleep += endSleepHour*60 + endSleepMinuite; // 주간 기상 시간 합(분)
+            EndSleep += endSleepHour*60 + endSleepMinute; // 주간 기상 시간 합(분)
 
             Integer totalSleepHour = Math.toIntExact(weeklyCards.get(i).getTotalSleepHour());
             Integer totalSleepMinute = Math.toIntExact(weeklyCards.get(i).getTotalSleepMinute());
 
-            weeklyTotalSleep += totalSleepHour*60 + totalSleepMinute; // 주간 수면 시간 합(분)
+            TotalSleep += totalSleepHour*60 + totalSleepMinute; // 주간 수면 시간 합(분)
         }
 
         try {
-            weeklyStartSleepList.add(weeklyStartSleep/weeklyCards.size()/60); // 주간 취침시간(분) -> 시간
-            weeklyStartSleepList.add(weeklyStartSleep/weeklyCards.size()%60); // 주간 취침시간(분) -> 분
-            weeklyTableList.add(weeklyStartSleepList);
+            weeklyStartSleep.add(StartSleep/weeklyCards.size()/60); // 주간 취침시간(분) -> 시간
+            weeklyStartSleep.add(StartSleep/weeklyCards.size()%60); // 주간 취침시간(분) -> 분
+            weeklyTable.add(weeklyStartSleep);
 
-            weeklyEndSleepList.add(weeklyEndSleep/weeklyCards.size()/60); // 주간 기상시간(분) -> 시간
-            weeklyEndSleepList.add(weeklyEndSleep/weeklyCards.size()%60); // 주간 기상시간(분) -> 분
-            weeklyTableList.add(weeklyEndSleepList);
+            weeklyEndSleep.add(EndSleep/weeklyCards.size()/60); // 주간 기상시간(분) -> 시간
+            weeklyEndSleep.add(EndSleep/weeklyCards.size()%60); // 주간 기상시간(분) -> 분
+            weeklyTable.add(weeklyEndSleep);
 
-            weeklyTotalSleepList.add(weeklyTotalSleep/weeklyCards.size()/60); // 주간 수면시간(분) -> 시간
-            weeklyTotalSleepList.add(weeklyTotalSleep/weeklyCards.size()%60); // 주간 수면시간(분) -> 분
-            weeklyTableList.add(weeklyTotalSleepList);
-
+            weeklyTotalSleep.add(TotalSleep/weeklyCards.size()/60); // 주간 수면시간(분) -> 시간
+            weeklyTotalSleep.add(TotalSleep/weeklyCards.size()%60); // 주간 수면시간(분) -> 분
+            weeklyTable.add(weeklyTotalSleep);
+            // [[평균 취침시간,분],[평균 기상시간,분],[평균 수면시간,분]]
         }catch (ArithmeticException e){
             List<Integer> zero = new ArrayList<>();
-            weeklyTableList.add(zero);
-            weeklyTableList.add(zero);
-            weeklyTableList.add(zero);
-            weeklyTableList.add(yoursleeptimebyconditions(principal));
-            return weeklyTableList;
+            weeklyTable.add(zero);
+            weeklyTable.add(zero);
+            weeklyTable.add(zero);
+            weeklyTable.add(yourSleepTimeByConditions(principal));
+            return weeklyTable;
         }
 
-        weeklyTableList.add(yoursleeptimebyconditions(principal));
+        weeklyTable.add(yourSleepTimeByConditions(principal));
+        // [[주간 평균 취침시간,분],[주간 평균 기상시간,분],[주간 평균 수면시간,분],[적정 수면시간, 분]]
 
-        return weeklyTableList;
+        return weeklyTable;
     }
 
 

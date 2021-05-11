@@ -39,7 +39,6 @@ public class CardsService {
             throw new IllegalArgumentException("{\"selectedAt\":"+selectedAt+"}");
         }
         cards.update(requestDto.getStartSleep(),requestDto.getEndSleep(),requestDto.getTag(),requestDto.getConditions(),requestDto.getMemo());
-//        cardsRepository.save(requestDto.toEntity(user)); // 업데이트 되지 않고 하나 더 생김 -> repository 메서드에는 update가 정녕 없나? -> 만들어줘야되나?
         return "ok";
     }
 
