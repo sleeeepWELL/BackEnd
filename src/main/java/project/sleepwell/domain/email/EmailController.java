@@ -24,7 +24,7 @@ public class EmailController {
         return ResponseEntity.ok("ok");
     }
 
-    //이메일로 인증 번호 보내는 api
+    //이메일로 인증 번호 보내는 api(회원가입 인증용)
     @PostMapping("/email/certification/send")
     public ResponseEntity<String> sendEmail(@RequestBody EmailCertificationRequestDto requestDto) throws UnsupportedEncodingException, MessagingException {
         emailCertificationService.sendEmail(requestDto.getEmail());
@@ -35,6 +35,13 @@ public class EmailController {
     @PostMapping("/email/certification/confirm")
     public ResponseEntity<String> emailVerification(@RequestBody EmailCertificationRequestDto requestDto) {
         emailCertificationService.verifyEmail(requestDto);
+        return ResponseEntity.ok("ok");
+    }
+
+    //이메일로 인증 번호 보내는 api(비밀번호 재설정용)
+    @PostMapping("/email/certification/send/reset")
+    public ResponseEntity<String> sendEmailToChangePw(@RequestBody EmailCertificationRequestDto requestDto) throws UnsupportedEncodingException, MessagingException {
+        emailCertificationService.sendEmailToChangePw(requestDto.getEmail());
         return ResponseEntity.ok("ok");
     }
 }

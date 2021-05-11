@@ -64,6 +64,14 @@ public class UserController {
         return ResponseEntity.ok(tokenDto);
     }
 
+    //비밀번호 찾기 (사실상 새 비밀번호 설정)
+    @PutMapping("/setting/password")
+    public ResponseEntity<String> setPassword(@RequestBody PasswordRequestDto requestDto) {
+        userService.setPassword(requestDto);
+        return ResponseEntity.ok("ok");
+    }
+
+
     /**
      * 혼자 하는 테스트
      * POST 메서드로 하니까 못 받네. 405 에러
