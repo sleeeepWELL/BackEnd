@@ -117,5 +117,14 @@ public class UserService {
         return all;
     }
 
+    //회원 탈퇴
+    public void deleteUser(org.springframework.security.core.userdetails.User principal) {
+        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
+                () -> new IllegalArgumentException("There is no user by that name.")
+        );
+        userRepository.deleteById(user.getId());
+
+    }
+
 
 }   //닫는 최종 괄호

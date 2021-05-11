@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import project.sleepwell.config.MyConfigurationProperties;
 import project.sleepwell.domain.user.User;
@@ -76,6 +77,13 @@ public class UserController {
     @PostMapping("/reissue")
     public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
         return ResponseEntity.ok(userService.reissue(tokenRequestDto));
+    }
+
+    //회원 탈퇴
+    @DeleteMapping("/withdrawal/membership")
+    public ResponseEntity<String> deleteUser(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
+        userService.deleteUser(principal);
+        return ResponseEntity.ok("ok");
     }
 
 }
