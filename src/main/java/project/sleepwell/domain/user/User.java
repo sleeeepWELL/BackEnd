@@ -56,5 +56,9 @@ public class User {
         this.kakaoId = kakaoId;
     }
 
+    public void update(String encodedPassword) {
+        this.password = encodedPassword;
+    }
+
 
 }

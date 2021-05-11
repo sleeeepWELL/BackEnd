@@ -14,10 +14,8 @@ import project.sleepwell.domain.refreshtoken.RefreshToken;
 import project.sleepwell.domain.refreshtoken.RefreshTokenRepository;
 import project.sleepwell.domain.user.*;
 import project.sleepwell.jwt.JwtTokenProvider;
-import project.sleepwell.web.dto.LoginDto;
-import project.sleepwell.web.dto.SignupRequestDto;
-import project.sleepwell.web.dto.TokenDto;
-import project.sleepwell.web.dto.TokenRequestDto;
+import project.sleepwell.web.dto.*;
+
 import java.util.List;
 
 @Slf4j
@@ -127,4 +125,19 @@ public class UserService {
     }
 
 
+    @Transactional
+    public void setPassword(PasswordRequestDto requestDto) {
+
+        if (!requestDto.getPassword().equals(requestDto.getPasswordCheck())) {
+            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        User user = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
+                () -> new IllegalArgumentException("There is no user.")
+        );
+        log.info("현재 비밀번호 재설정 요청한 유저 = {}", user.getEmail());
+        String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
+        user.update(encodedPassword);
+
+    }
 }   //닫는 최종 괄호
