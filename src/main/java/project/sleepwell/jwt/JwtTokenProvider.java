@@ -51,12 +51,12 @@ public class JwtTokenProvider {
         //유저 정보와 권한 정보 담기
         Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);   //현재 시간 + 30분간
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())       //"sub" :  username
+                .setSubject(authentication.getName())       //"sub" :  username -> userId
                 .claim(AUTHORITIES_KEY, authorities)        //"auth" : "ROLE_USER"
                 .setExpiration(accessTokenExpiresIn)        //"exp":"now + 30m"
                 .signWith(key, SignatureAlgorithm.HS512)    //"alg":"HS512"
                 .compact();
-        log.info("authentication.getName() = {}", authentication.getName());
+        log.info("authentication.getName() = {}", authentication.getName());    // -> userId
 
         //Refresh Token
         //아무 정보도 담지 않음
@@ -91,7 +91,7 @@ public class JwtTokenProvider {
                 .collect(Collectors.toList());
 
         UserDetails principal = new User(claims.getSubject(), "", authorities);
-        log.info("principal = {}", principal);
+        log.info("principal = {}", principal);      // -> principal :
 
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }

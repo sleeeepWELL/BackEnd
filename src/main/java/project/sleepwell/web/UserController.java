@@ -15,6 +15,7 @@ import project.sleepwell.util.SecurityUtil;
 import project.sleepwell.web.dto.*;
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,7 +38,7 @@ public class UserController {
     //현재 로그인 한 user 의 username 조회
     @GetMapping("/username")
     public String getUsername() {
-        return SecurityUtil.getCurrentUsername();
+        return userService.getUsername();
     }
 
     //username 중복 체크
@@ -46,17 +47,19 @@ public class UserController {
         return ResponseEntity.ok(userService.checkUsername(username));
     }
 
-
+    //signup
     @PostMapping("/signup")
     public Long createUser(@Valid @RequestBody SignupRequestDto signupRequestDto) {
         return userService.createUser(signupRequestDto);
     }
 
+    //login
     @PostMapping("/api/login")
     public ResponseEntity<TokenDto> login(@Valid @RequestBody LoginDto loginDto) {
         return ResponseEntity.ok(userService.login(loginDto));
     }
 
+    //kakao
     @RequestMapping("/oauth/callback/kakao")
     public ResponseEntity<TokenDto> kakaoLogin(@RequestParam String code) {
         log.info("프론트에서 받은 코드 = {}", code);
@@ -64,11 +67,33 @@ public class UserController {
         return ResponseEntity.ok(tokenDto);
     }
 
-    //비밀번호 찾기 (사실상 새 비밀번호 설정)
+    //find password (사실상 새 비밀번호 설정)
     @PutMapping("/setting/password")
     public ResponseEntity<String> setPassword(@RequestBody PasswordRequestDto requestDto) {
         userService.setPassword(requestDto);
         return ResponseEntity.ok("ok");
+    }
+
+    //username 변경하기
+    @PutMapping("/setting/username")
+    public ResponseEntity<String> changeUsername(@RequestBody Map<String, String> param) {
+        userService.changeUsername(param);
+        return ResponseEntity.ok("ok");
+    }
+
+    //matching password
+//    @PostMapping("/matching/password")
+//    public ResponseEntity<String> matchPassword(@RequestBody String password) {
+//        userService.matchPassword(password);
+//        return ResponseEntity.ok("ok");
+//    }
+
+    //change password
+    @PutMapping("/setting/password/new")
+    public ResponseEntity<String> changePassword(@RequestBody Map<String, String> param) {
+        userService.changePassword(param);
+        return ResponseEntity.ok("ok");
+
     }
 
 
@@ -89,8 +114,9 @@ public class UserController {
 
     //회원 탈퇴
     @DeleteMapping("/withdrawal/membership")
-    public ResponseEntity<String> deleteUser(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-        userService.deleteUser(principal);
+    public ResponseEntity<String> deleteUser() {
+//        userService.deleteUser(principal);
+        userService.deleteUser();
         return ResponseEntity.ok("ok");
     }
 

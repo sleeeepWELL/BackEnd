@@ -38,8 +38,8 @@ public class KakaoService {
     public TokenDto kakaoLogin(String code) {
         KakaoUserInfo kakaoUserInfo = kakaoOAuth2.getUserInfo(code);
         Long kakaoId = kakaoUserInfo.getId();
-        String nickname = kakaoUserInfo.getNickname();
         String email = kakaoUserInfo.getEmail();
+        String nickname = kakaoUserInfo.getNickname();
 
         //우리 DB에 중복된 Kakao Id 가 있는지 확인
         User kakaoUser = userRepository.findByKakaoId(kakaoId)
@@ -76,11 +76,12 @@ public class KakaoService {
 
         }
 
+        //kakaoUser = id, authority, email, kakao_id, password, username
         //카카오 로그인으로 슬립웰을 이용하는 유저
         //스프링 시큐리티를 통해 로그인 처리
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(kakaoUser.getAuthority().toString());
         UserDetails principal = new org.springframework.security.core.userdetails.User(
-                kakaoUser.getUsername(),
+                String.valueOf(kakaoUser.getId()),
                 kakaoUser.getPassword(),
                 Collections.singleton(grantedAuthority));
 
