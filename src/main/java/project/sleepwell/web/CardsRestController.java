@@ -2,7 +2,6 @@ package project.sleepwell.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import project.sleepwell.domain.cards.Cards;
 import project.sleepwell.service.CardsService;
@@ -30,37 +29,33 @@ public class CardsRestController {
 
     //내 캘린더 조회
     @GetMapping("/cards/calendars")
-    public List<Cards> getMyCalendars(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-        return cardsService.getMyCalendars(principal);
+    public List<Cards> getMyCalendars() {
+        return cardsService.getMyCalendars();
     }
 
     //카드 작성
     @PostMapping("/cards")
-    public String createCard(@RequestBody CardsRequestDto requestDto,
-                             @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-        return cardsService.save(requestDto,principal);
+    public String createCard(@RequestBody CardsRequestDto requestDto) {
+        return cardsService.save(requestDto);
     }
 
     //수정
     @PutMapping("/cards/{selectedAt}")
     public String update(@PathVariable("selectedAt") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate selectedAt,
-                         @RequestBody CardsRequestDto requestDto,
-                         @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-        return cardsService.update(selectedAt,requestDto,principal);
+                         @RequestBody CardsRequestDto requestDto) {
+        return cardsService.update(selectedAt,requestDto);
     }
 
     //상세 조회
     @GetMapping("/cards/{selectedAt}")
-    public Cards findBySelectedAt(@PathVariable("selectedAt") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate selectedAt,
-                                  @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-        return cardsService.findBySelectedAt(selectedAt, principal);
+    public Cards findBySelectedAt(@PathVariable("selectedAt") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate selectedAt) {
+        return cardsService.findBySelectedAt(selectedAt);
     }
 
     //삭제
     @DeleteMapping("/cards/{selectedAt}")
-    public String delete(@PathVariable("selectedAt") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate selectedAt,
-                         @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-        return cardsService.delete(selectedAt, principal);
+    public String delete(@PathVariable("selectedAt") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate selectedAt) {
+        return cardsService.delete(selectedAt);
     }
 
 }
