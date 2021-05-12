@@ -46,8 +46,7 @@ public class ChartController {
 
     //주간 - 적정 수면 시간과 나의 수면 시간
     @GetMapping("/chart/lineChart/{today}")
-    public List<LineChartResponseDto> compareToSleeptime(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate today,
-                                                         @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-        return chartService.compareToSleeptime(today, principal);
+    public List<LineChartResponseDto> compareToSleeptime(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate today) {
+        return chartService.compareToSleeptime(today);
     }
 }

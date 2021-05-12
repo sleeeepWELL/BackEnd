@@ -266,10 +266,9 @@ public class ChartService {
 
 
     //적정 수면 시간, 주간 수면 시간 비교
-    public List<LineChartResponseDto> compareToSleeptime(LocalDate today,
-                                                         org.springframework.security.core.userdetails.User principal) {
+    public List<LineChartResponseDto> compareToSleeptime(LocalDate today) {
 
-        User user = userRepository.findByUsername(SecurityUtil.getCurrentUsername()).orElseThrow(
+        User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(
                 () -> new IllegalArgumentException("There is no user by that name.")
         );
 

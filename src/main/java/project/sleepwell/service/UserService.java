@@ -14,9 +14,11 @@ import project.sleepwell.domain.refreshtoken.RefreshToken;
 import project.sleepwell.domain.refreshtoken.RefreshTokenRepository;
 import project.sleepwell.domain.user.*;
 import project.sleepwell.jwt.JwtTokenProvider;
+import project.sleepwell.util.SecurityUtil;
 import project.sleepwell.web.dto.*;
 
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -53,6 +55,11 @@ public class UserService {
     public TokenDto login(LoginDto loginDto) {
         //email, password 를 인자로 받아서 authenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = loginDto.toAuthentication();
+
+        String whatIsThis = authenticationToken.getName();
+        String what = authenticationToken.toString();
+        log.info("whatIsThis와 what 도대체 이게 뭐지? ={}, {}", whatIsThis, what);
+
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         //토큰 만들기
         TokenDto tokenDto = jwtTokenProvider.generateTokenDto(authentication);
@@ -101,6 +108,14 @@ public class UserService {
     }
 
 
+    //username 가져오기
+    public String getUsername() {
+        User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(
+                () -> new IllegalArgumentException("There is no user.")
+        );
+        return user.getUsername();
+    }
+
     //username 중복 확인
     @Transactional(readOnly = true)
     public boolean checkUsername(String username) {
@@ -116,9 +131,10 @@ public class UserService {
     }
 
     //회원 탈퇴
-    public void deleteUser(org.springframework.security.core.userdetails.User principal) {
-        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("There is no user by that name.")
+    @Transactional
+    public void deleteUser() {
+        User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(
+                () -> new IllegalArgumentException("There is no user.")
         );
         userRepository.deleteById(user.getId());
 
@@ -137,7 +153,47 @@ public class UserService {
         );
         log.info("현재 비밀번호 재설정 요청한 유저 = {}", user.getEmail());
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
-        user.update(encodedPassword);
+        user.updatePassword(encodedPassword);
 
     }
+
+    @Transactional
+    public void changeUsername(Map<String, String> param) {
+        User user = userRepository.findById(SecurityUtil.getCurrentUserId())
+                .orElseThrow(() -> new IllegalArgumentException("There is no user.")
+                );
+        user.updateUsername(param.get("username"));
+    }
+
+    //비밀번호 확인하기
+//    public void matchPassword(String password) {
+//        String encodedPassword = passwordEncoder.encode(password);
+//        User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(
+//                () -> new IllegalArgumentException("There is no user.")
+//        );
+//        log.info("파라미터값 인코딩 한 패스워드 = {}", encodedPassword);
+//        log.info("repo에서 불러온 유저 패스워드 = {}", user.getPassword());
+//
+//        if (!encodedPassword.equals(user.getPassword())) {
+//            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+//        }
+//    }
+
+    @Transactional
+    public void changePassword(Map<String, String> param) {
+
+        if (!param.get("password").equals(param.get("passwordCheck"))) {
+            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
+        }
+
+        User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(
+                () -> new IllegalArgumentException("There is no user.")
+        );
+
+        String encodedPassword = passwordEncoder.encode(param.get("password"));
+
+        user.updatePassword(encodedPassword);
+    }
+
+
 }   //닫는 최종 괄호
