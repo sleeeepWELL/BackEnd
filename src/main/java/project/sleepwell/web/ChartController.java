@@ -2,7 +2,6 @@ package project.sleepwell.web;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,26 +20,24 @@ public class ChartController {
 
     // 컨디션 2보다 높은 Total sleep 찾기 -> 마지막 추천 문구
     @GetMapping("/chart/yourSleepTime")
-    public List<Integer> yourSleepTimeByConditions(@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-        return chartService.yourSleepTimeByConditions(principal);
+    public List<Integer> yourSleepTimeByConditions() {
+        return chartService.yourSleepTimeByConditions();
     }
 
     // 오늘을 기준으로 주간,월간 태그의 빈도수 구하기 그래프
     @GetMapping("/chart/barChart/{today}")
-    public List<List<Integer>> tagBarChart (@PathVariable("today") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate today,
-                                            @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-        return chartService.tagBarChart(today,principal);
+    public List<List<Integer>> tagBarChart (@PathVariable("today") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate today) {
+        return chartService.tagBarChart(today);
     }
 
     @GetMapping("/chart/grassChart")
-    public List<Map<String,Object>> grassChart (@AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-        return chartService.grassChart(principal);
+    public List<Map<String,Object>> grassChart () {
+        return chartService.grassChart();
     }
 
     @GetMapping("/chart/table/{today}")
-    public List<List<Integer>> weeklyTable (@PathVariable("today") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate today,
-                                            @AuthenticationPrincipal org.springframework.security.core.userdetails.User principal) {
-        return chartService.weeklyTable(today,principal);
+    public List<List<Integer>> weeklyTable (@PathVariable("today") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate today) {
+        return chartService.weeklyTable(today);
     }
 
 

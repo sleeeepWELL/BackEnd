@@ -22,9 +22,9 @@ public class ChartService {
     private final UserRepository userRepository;
 
     //conditons이 2보다 큰 카드에서 sleeptime을 추출하여 평균 계산 -> 가중평균
-    public List<Integer> yourSleepTimeByConditions(org.springframework.security.core.userdetails.User principal){
-        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("nothing")
+    public List<Integer> yourSleepTimeByConditions(){
+        User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(
+                () -> new IllegalArgumentException("There is no user.")
         );
         List<Cards> cards = cardsRepository.findCardsByConditionsGreaterThanAndUserEquals(2L,user); //컨디션이 2보다 큰 카드
 
@@ -95,9 +95,9 @@ public class ChartService {
     }
 
     //주간, 월간 태그 빈도수 -> 막대그래프
-    public List<List<Integer>> tagBarChart(LocalDate today, org.springframework.security.core.userdetails.User principal){
-        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("nothing")
+    public List<List<Integer>> tagBarChart(LocalDate today){
+        User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(
+                () -> new IllegalArgumentException("There is no user.")
         );
 
         //주간 데이터
@@ -173,9 +173,9 @@ public class ChartService {
     }
 
     // 기록한 날짜 + 컨디션 나타내는 잔디 심기 차트
-    public List<Map<String,Object>> grassChart(org.springframework.security.core.userdetails.User principal) {
-        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("nothing")
+    public List<Map<String,Object>> grassChart() {
+        User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(
+                () -> new IllegalArgumentException("There is no user.")
         );
 
         List<Cards> cards = cardsRepository.findCardsByUser(user);
@@ -196,14 +196,14 @@ public class ChartService {
     }
 
     // 이번주 수면시간 표
-    public List<List<Integer>> weeklyTable(LocalDate today, org.springframework.security.core.userdetails.User principal) {
-        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("nothing")
+    public List<List<Integer>> weeklyTable(LocalDate today) {
+        User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(
+                () -> new IllegalArgumentException("There is no user.")
         );
 
         //주간 데이터
-        LocalDate weekly = today.minusDays(7L);
-        List<Cards> weeklyCards = cardsRepository.findCardsBySelectedAtIsAfterAndUser(weekly, user); // 7일까지의 유저 카드 불러오기
+        LocalDate aWeekAgo = today.minusDays(7L);
+        List<Cards> weeklyCards = cardsRepository.findCardsBySelectedAtIsAfterAndUser(aWeekAgo, user); // 7일까지의 유저 카드 불러오기
 
         //리턴할 그릇
         List<List<Integer>> weeklyTable = new ArrayList<>();
@@ -253,11 +253,11 @@ public class ChartService {
             weeklyTable.add(zero);
             weeklyTable.add(zero);
             weeklyTable.add(zero);
-            weeklyTable.add(yourSleepTimeByConditions(principal));
+            weeklyTable.add(yourSleepTimeByConditions());
             return weeklyTable;
         }
 
-        weeklyTable.add(yourSleepTimeByConditions(principal));
+        weeklyTable.add(yourSleepTimeByConditions());
         // [[주간 평균 취침시간,분],[주간 평균 기상시간,분],[주간 평균 수면시간,분],[적정 수면시간, 분]]
 
         return weeklyTable;

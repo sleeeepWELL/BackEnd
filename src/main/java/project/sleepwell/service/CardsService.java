@@ -6,6 +6,7 @@ import project.sleepwell.domain.cards.Cards;
 import project.sleepwell.domain.cards.CardsRepository;
 import project.sleepwell.domain.user.User;
 import project.sleepwell.domain.user.UserRepository;
+import project.sleepwell.util.SecurityUtil;
 import project.sleepwell.web.dto.CardsRequestDto;
 
 import javax.transaction.Transactional;
@@ -20,9 +21,9 @@ public class CardsService {
 
     //게시
     @Transactional
-    public String save(CardsRequestDto requestDto, org.springframework.security.core.userdetails.User principal) {
-        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("nothing")
+    public String save(CardsRequestDto requestDto) {
+        User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(
+                () -> new IllegalArgumentException("There is no user.")
         );
         cardsRepository.save(requestDto.toEntity(user));
         return "ok";
@@ -30,9 +31,9 @@ public class CardsService {
 
     //수정
     @Transactional
-    public String update(LocalDate selectedAt, CardsRequestDto requestDto, org.springframework.security.core.userdetails.User principal){
-        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("nothing")
+    public String update(LocalDate selectedAt, CardsRequestDto requestDto){
+        User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(
+                () -> new IllegalArgumentException("There is no user.")
         );
         Cards cards= cardsRepository.findCardsBySelectedAtEqualsAndUser(selectedAt, user);
         if(cards==null){
@@ -43,9 +44,9 @@ public class CardsService {
     }
 
     //상세조회
-    public Cards findBySelectedAt(LocalDate selectedAt, org.springframework.security.core.userdetails.User principal) {
-        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("nothing")
+    public Cards findBySelectedAt(LocalDate selectedAt) {
+        User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(
+                () -> new IllegalArgumentException("There is no user.")
         );
         Cards cards= cardsRepository.findCardsBySelectedAtEqualsAndUser(selectedAt, user);
         if(cards==null){
@@ -60,10 +61,9 @@ public class CardsService {
 //    }
 
     //내가 작성한 캘린더(카드들) 다 조회하기
-    public List<Cards> getMyCalendars(org.springframework.security.core.userdetails.User principal) {
-
-        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("nothing")
+    public List<Cards> getMyCalendars() {
+        User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(
+                () -> new IllegalArgumentException("There is no user.")
         );
 
         return cardsRepository.findCardsByUser(user);
@@ -71,10 +71,9 @@ public class CardsService {
 
     //삭제
     @Transactional
-    public String delete(LocalDate selectedAt, org.springframework.security.core.userdetails.User principal) {
-
-        User user = userRepository.findByUsername(principal.getUsername()).orElseThrow(
-                () -> new IllegalArgumentException("nothing")
+    public String delete(LocalDate selectedAt) {
+        User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(
+                () -> new IllegalArgumentException("There is no user.")
         );
         cardsRepository.deleteCardsBySelectedAtEqualsAndUser(selectedAt,user);
         return "ok";
