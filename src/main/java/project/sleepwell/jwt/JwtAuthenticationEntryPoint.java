@@ -3,16 +3,12 @@ package project.sleepwell.jwt;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 
-/*
- * 로그인 하지 않고 유저 정보 없이 uri 로 접근하면 status 401 에러를 내려줌.
- * WebSecurityConfig 에 내가 만든 exception handler 를 등록해야 함.
- */
+//status 401
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
 

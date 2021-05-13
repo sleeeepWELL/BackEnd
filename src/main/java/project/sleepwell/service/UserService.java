@@ -36,6 +36,7 @@ public class UserService {
     MyConfigurationProperties myConfigurationProperties;
 
 
+    //sign up
     @Transactional
     public Long createUser(SignupRequestDto signupRequestDto) {
         if (userRepository.existsByEmail(signupRequestDto.getEmail())) {
@@ -51,6 +52,7 @@ public class UserService {
 
     }
 
+    //login
     @Transactional
     public TokenDto login(LoginDto loginDto) {
         //email, password 를 인자로 받아서 authenticationToken 생성
@@ -58,7 +60,7 @@ public class UserService {
 
         String whatIsThis = authenticationToken.getName();
         String what = authenticationToken.toString();
-        log.info("whatIsThis와 what 도대체 이게 뭐지? ={}, {}", whatIsThis, what);
+        log.info("whatIsThis 와 what 도대체 이게 뭐지? ={}, {}", whatIsThis, what);
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         //토큰 만들기
@@ -77,6 +79,7 @@ public class UserService {
 
 
 
+    //reissue
     @Transactional
     public TokenDto reissue(TokenRequestDto tokenRequestDto) {
         //refresh token 검증 하기
@@ -141,6 +144,7 @@ public class UserService {
     }
 
 
+    //비밀번호 찾기 (새비밀번호 설정)
     @Transactional
     public void setPassword(PasswordRequestDto requestDto) {
 
@@ -157,6 +161,7 @@ public class UserService {
 
     }
 
+    //username 변경
     @Transactional
     public void changeUsername(Map<String, String> param) {
         User user = userRepository.findById(SecurityUtil.getCurrentUserId())
@@ -165,21 +170,9 @@ public class UserService {
         user.updateUsername(param.get("username"));
     }
 
-    //비밀번호 확인하기
-//    public void matchPassword(String password) {
-//        String encodedPassword = passwordEncoder.encode(password);
-//        User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(
-//                () -> new IllegalArgumentException("There is no user.")
-//        );
-//        log.info("파라미터값 인코딩 한 패스워드 = {}", encodedPassword);
-//        log.info("repo에서 불러온 유저 패스워드 = {}", user.getPassword());
-//
-//        if (!encodedPassword.equals(user.getPassword())) {
-//            throw new RuntimeException("비밀번호가 일치하지 않습니다.");
-//        }
-//    }
 
-    @Transactional
+    //비밀번호 변경
+   @Transactional
     public void changePassword(Map<String, String> param) {
 
         if (!param.get("password").equals(param.get("passwordCheck"))) {

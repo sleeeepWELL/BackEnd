@@ -10,14 +10,12 @@ import java.time.Duration;
 @Repository
 public class EmailCertificationRepository {
 
-    //key
     private final String PREFIX = "email: ";
-    //3분 시간제한
     private final int LIMIT_TIME = 3 * 60;
 
     private final StringRedisTemplate stringRedisTemplate;
 
-    //발송 정보(email, certificationNumber)를 Redis 에 저장
+
     public void createEmailCertification(String email, String certificationNumber) {
         //key: email, value: certificationNumber, 3분 시간제한 설정
         stringRedisTemplate.opsForValue()

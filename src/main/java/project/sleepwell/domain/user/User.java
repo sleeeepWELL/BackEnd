@@ -23,7 +23,7 @@ public class User {
     @JsonManagedReference
     private List<Cards> cards = new ArrayList<>();
 
-    private String username;    //nickname 처럼 활용
+    private String username;
 
     private String email;
 
@@ -48,13 +48,14 @@ public class User {
         this.kakaoId = null;
     }
 
-    public User(String username, String password, String email, Authority authority, Long kakaoId) {  //email 이 없음
+    public User(String username, String password, String email, Authority authority, Long kakaoId) {
         this.username = username;
         this.password = password;
         this.email = email;
-        this.authority = Authority.ROLE_USER;       //authority 해도 됨.
+        this.authority = Authority.ROLE_USER;
         this.kakaoId = kakaoId;
     }
+
 
     //change password
     public void updatePassword(String encodedPassword) {
