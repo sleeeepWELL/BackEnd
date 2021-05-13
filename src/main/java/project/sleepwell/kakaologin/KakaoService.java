@@ -57,13 +57,11 @@ public class KakaoService {
             }
             //카카오 이메일로 회원 정보를 찾았는데, 슬립웰에서 같은 이메일을 사용하는 유저가 있을 때.
             if (sameUser != null) {
-                //이메일 인증 했을 경우 (슬립웰 유저 정보 + 카카오 아이디만 넣으면 된다.)
                 kakaoUser = sameUser;
                 kakaoUser.setKakaoId(kakaoId);
                 userRepository.save(kakaoUser);
             } else {
                 //슬립웰에 처음 들어온 유저.
-                //카카오에서의 닉네임 == 슬립웰에서의 유저네임
                 String username = nickname;
                 String password = kakaoId + myConfigurationProperties.getAdminToken();
                 String encodedPassword = passwordEncoder.encode(password);
@@ -76,9 +74,7 @@ public class KakaoService {
 
         }
 
-        //kakaoUser = id, authority, email, kakao_id, password, username
-        //카카오 로그인으로 슬립웰을 이용하는 유저
-        //스프링 시큐리티를 통해 로그인 처리
+
         GrantedAuthority grantedAuthority = new SimpleGrantedAuthority(kakaoUser.getAuthority().toString());
         UserDetails principal = new org.springframework.security.core.userdetails.User(
                 String.valueOf(kakaoUser.getId()),
@@ -90,14 +86,15 @@ public class KakaoService {
 
         //프론트로 토큰 넘겨주기
         TokenDto tokenDto = jwtTokenProvider.generateTokenDto(authentication);
-        //refresh token 저장
+
         RefreshToken refreshToken = RefreshToken.builder()
                 .refreshKey(authentication.getName())
                 .refreshValue(tokenDto.getRefreshToken())
                 .build();
 
         refreshTokenRepository.save(refreshToken);
-        return tokenDto;
 
+        return tokenDto;
     }
+
 }

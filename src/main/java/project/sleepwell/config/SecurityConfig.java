@@ -61,12 +61,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.POST, "/oauth/callback/kakao").permitAll()
                 .antMatchers("/username").permitAll()
                 .antMatchers("/username/{username}").permitAll()
-                .antMatchers("/email").permitAll()
+
                 .antMatchers("/email/certification/send").permitAll()
                 .antMatchers("/email/certification/send/reset").permitAll()
                 .antMatchers("/email/certification/confirm").permitAll()
-                .antMatchers(HttpMethod.PUT, "/setting/password").permitAll()
-                .antMatchers("/chart/lineChart/{today}").permitAll();
+                .antMatchers(HttpMethod.PUT, "/setting/password").permitAll();
 
         http
                 //핸들러 등록해놓기
@@ -81,11 +80,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/signup").permitAll()
+//                .antMatchers(HttpMethod.POST, "/signup").permitAll()
 
                 .anyRequest().authenticated()
 
-                //JstSecurityConfig(커스텀 필터 등록해놓은) 등록. 커스텀 필터를 쓰겠다.
+                //JwtSecurityConfig 등록
                 .and()
                 .apply(new JwtSecurityConfig(jwtTokenProvider));
     }

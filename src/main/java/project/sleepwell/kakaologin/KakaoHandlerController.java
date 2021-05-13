@@ -22,7 +22,6 @@ public class KakaoHandlerController {
 
     @GetMapping("/kakao")
     public void redirectAuthorization(HttpServletResponse response) throws IOException {
-        //properties 에 넣어놓고, 시크릿으로 빼오는 코드 작성 할 것 (테스트 성공하면)
         String baseUrl = myConfigurationProperties.getBaseUrl();
         String clientId = "&client_id=" + myConfigurationProperties.getClientId();
         String redirectUri = "&redirect_uri=" + myConfigurationProperties.getLoginUrl();

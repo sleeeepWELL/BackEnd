@@ -13,16 +13,13 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import project.sleepwell.web.dto.TokenDto;
-
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.stream.Collectors;
 
-/**
- * Jwt 토큰 암호화, 복호화, 검증
- */
+
 @Slf4j
 @Component
 public class JwtTokenProvider {
@@ -39,27 +36,21 @@ public class JwtTokenProvider {
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }
 
-    //authentication = principal, credential, authority
-    //유저 정보 넘겨받아서 Access Token + Refresh Token 만들기
+
     public TokenDto generateTokenDto(Authentication authentication) {
         String authorities = authentication.getAuthorities().stream().map(GrantedAuthority::getAuthority)
                 .collect(Collectors.joining(","));
 
         long now = (new Date()).getTime();
 
-        //Access Token  **getName 에 userId -> username (custom 에서 설정) =====//
-        //유저 정보와 권한 정보 담기
-        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);   //현재 시간 + 30분간
+        Date accessTokenExpiresIn = new Date(now + ACCESS_TOKEN_EXPIRE_TIME);
         String accessToken = Jwts.builder()
-                .setSubject(authentication.getName())       //"sub" :  username -> userId
-                .claim(AUTHORITIES_KEY, authorities)        //"auth" : "ROLE_USER"
-                .setExpiration(accessTokenExpiresIn)        //"exp":"now + 30m"
-                .signWith(key, SignatureAlgorithm.HS512)    //"alg":"HS512"
+                .setSubject(authentication.getName())
+                .claim(AUTHORITIES_KEY, authorities)
+                .setExpiration(accessTokenExpiresIn)
+                .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
-        log.info("authentication.getName() = {}", authentication.getName());    // -> userId
 
-        //Refresh Token
-        //아무 정보도 담지 않음
         String refreshToken = Jwts.builder()
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
                 .signWith(key, SignatureAlgorithm.HS512)
@@ -71,19 +62,17 @@ public class JwtTokenProvider {
                 .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
                 .refreshToken(refreshToken)
                 .build();
-        //**getTime
+
     }
 
-    //accessToken 에 있는 정보를 이용해서 Authentication 객체 리턴
+
     public Authentication getAuthentication(String accessToken) {
         //토큰 복호화 해서 토큰에 들어 있는 정보 꺼내기
         Claims claims = parseClaims(accessToken);
 
-        //auth == null
         if (claims.get(AUTHORITIES_KEY) == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
-        log.info("claims = {}", claims);
 
         //claims 권한 정보 가져오기
         Collection<? extends GrantedAuthority> authorities = Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
@@ -91,10 +80,10 @@ public class JwtTokenProvider {
                 .collect(Collectors.toList());
 
         UserDetails principal = new User(claims.getSubject(), "", authorities);
-        log.info("principal = {}", principal);      // -> principal :
 
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
+
 
     //토큰 유효성 테스트
     public boolean validateToken(String token) {
@@ -113,6 +102,7 @@ public class JwtTokenProvider {
         return false;
     }
 
+
     //변환 하기
     private Claims parseClaims(String accessToken) {
         try {
@@ -130,4 +120,5 @@ public class JwtTokenProvider {
             return e.getClaims();
         }
     }
+
 }

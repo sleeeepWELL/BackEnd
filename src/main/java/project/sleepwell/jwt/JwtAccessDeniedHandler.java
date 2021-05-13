@@ -9,11 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-
-/*
- * 권한도 없는 유저(유저 정보는 있음)가 접근해서 요청을 하면 status 403 에러를 내려줌.
- * WebSecurityConfig 에 내가 만든 exception handler 를 등록해야 함.
- */
+//status 403
 @Component
 public class JwtAccessDeniedHandler implements AccessDeniedHandler {
 

@@ -67,6 +67,18 @@ public class UserController {
         return ResponseEntity.ok(tokenDto);
     }
 
+
+    /**
+     * 혼자 하는 테스트
+     * POST 메서드로 하니까 못 받네. 405 에러
+     */
+//    @GetMapping("/oauth/callback/kakao")
+//    public ResponseEntity<TokenDto> kakaoLogin(String code) {
+//        TokenDto tokenDto = kakaoService.kakaoLogin(code);
+//        return ResponseEntity.ok(tokenDto);
+//    }
+
+
     //find password (사실상 새 비밀번호 설정)
     @PutMapping("/setting/password")
     public ResponseEntity<String> setPassword(@RequestBody PasswordRequestDto requestDto) {
@@ -81,32 +93,14 @@ public class UserController {
         return ResponseEntity.ok("ok");
     }
 
-    //matching password
-//    @PostMapping("/matching/password")
-//    public ResponseEntity<String> matchPassword(@RequestBody String password) {
-//        userService.matchPassword(password);
-//        return ResponseEntity.ok("ok");
-//    }
-
     //change password
     @PutMapping("/setting/password/new")
     public ResponseEntity<String> changePassword(@RequestBody Map<String, String> param) {
         userService.changePassword(param);
         return ResponseEntity.ok("ok");
-
     }
 
-
-    /**
-     * 혼자 하는 테스트
-     * POST 메서드로 하니까 못 받네. 405 에러
-     */
-//    @GetMapping("/oauth/callback/kakao")
-//    public ResponseEntity<TokenDto> kakaoLogin(String code) {
-//        TokenDto tokenDto = kakaoService.kakaoLogin(code);
-//        return ResponseEntity.ok(tokenDto);
-//    }
-
+    //토큰 재발행
     @PostMapping("/reissue")
     public ResponseEntity<TokenDto> reissue(@RequestBody TokenRequestDto tokenRequestDto) {
         return ResponseEntity.ok(userService.reissue(tokenRequestDto));
@@ -115,7 +109,6 @@ public class UserController {
     //회원 탈퇴
     @DeleteMapping("/withdrawal/membership")
     public ResponseEntity<String> deleteUser() {
-//        userService.deleteUser(principal);
         userService.deleteUser();
         return ResponseEntity.ok("ok");
     }

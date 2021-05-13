@@ -22,18 +22,17 @@ public class EmailCertificationService {
     private final EmailCertificationRepository emailCertificationRepository;
     private final JavaMailSender emailSender;
     private final UserRepository userRepository;
-//    private static final String keyNum = createKey();
 
 
     //email 로 인증번호를 발송하고, 발송 정보(email, certificationNumber)를 Redis 에 저장
     public void sendEmail(String email) throws UnsupportedEncodingException, MessagingException {
 
         String randomNumber = makeRandomNumber();
-
         MimeMessage message = createMessage(email, randomNumber);
         try{
             emailSender.send(message);
             log.info("send authorize code to email.");
+
         }catch(MailException es){
             es.printStackTrace();
             throw new IllegalArgumentException();
@@ -65,11 +64,11 @@ public class EmailCertificationService {
 
     //유저가 입력한 인증번호가 Redis 에 저장된 인증번호와 일치하는지 확인
     public void verifyEmail(EmailCertificationRequestDto requestDto) {
-        //true == 인증번호 불일치
+
         if (isVerify(requestDto)) {
             throw new CertificationNumberMismatchException("인증번호가 일치하지 않습니다.");
         }
-        //인증번호가 일치하면 redis 에 저장된 인증번호를 삭제
+
         emailCertificationRepository.removeEmailCertification(requestDto.getEmail());
     }
 
@@ -77,18 +76,16 @@ public class EmailCertificationService {
         boolean isExistKey = emailCertificationRepository.hasKey(requestDto.getEmail());
         String findCtfKey = emailCertificationRepository.getEmailCertificationNum(requestDto.getEmail());
 
-        //redis 에 저장된 인증번호 != 유저가 입력한 인증번호. return true
-        //하나라도 false 가 되면 결과는 !false == true 가 돼서 if 문에 들어감.
         return !(isExistKey && findCtfKey.equals(requestDto.getCertificationNumber()));
     }
 
 
+    //이메일 보내기 (회원가입 시 인증용 이메일)
     private MimeMessage createMessage(String email, String randomNumber) throws MessagingException, UnsupportedEncodingException {
         log.info("받는 사람 = {}", email);
         log.info("인증 번호 = {}", randomNumber);
 
         MimeMessage message = emailSender.createMimeMessage();
-//        String verificationCode = settingCode(keyNum);
         //to.you
         message.addRecipients(MimeMessage.RecipientType.TO, email);
         //mail title (상단에 노출)
@@ -115,6 +112,7 @@ public class EmailCertificationService {
         return message;
     }
 
+    //이메일 보내기 (비밀번호 찾기 시 인증용)
     private MimeMessage createMessageToChangePw(String email, String randomNumber) throws MessagingException, UnsupportedEncodingException {
         log.info("받는 사람 = {}", email);
         log.info("인증 번호 = {}", randomNumber);

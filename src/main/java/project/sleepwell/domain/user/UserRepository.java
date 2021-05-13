@@ -6,7 +6,7 @@ import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
 
-    //로그인 할 때 email 사용
+    //로그인 시
     Optional<User> findByEmail(String email);
 
     //중복 가입 방지
