@@ -2,6 +2,7 @@ package project.sleepwell.domain.email;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,6 +13,11 @@ import java.io.UnsupportedEncodingException;
 @RestController
 @RequiredArgsConstructor
 public class EmailController {
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    public String exceptionHandler(Exception e){
+        return e.getMessage();
+    }
 
     private final EmailCertificationService emailCertificationService;
 

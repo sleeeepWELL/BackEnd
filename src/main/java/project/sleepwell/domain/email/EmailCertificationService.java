@@ -27,6 +27,10 @@ public class EmailCertificationService {
     //email 로 인증번호를 발송하고, 발송 정보(email, certificationNumber)를 Redis 에 저장
     public void sendEmail(String email) throws UnsupportedEncodingException, MessagingException {
 
+        if (userRepository.findByEmail(email).isPresent()) {
+            throw new IllegalArgumentException("이메일 중복");
+        }
+
         String randomNumber = makeRandomNumber();
         MimeMessage message = createMessage(email, randomNumber);
         try{
