@@ -49,7 +49,7 @@ public class Cards{
     @Column
     private String memo;
 
-    @Column
+    @Column(nullable = false)
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate selectedAt;
 

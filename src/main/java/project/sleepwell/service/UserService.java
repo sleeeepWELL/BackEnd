@@ -58,10 +58,6 @@ public class UserService {
         //email, password 를 인자로 받아서 authenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = loginDto.toAuthentication();
 
-        String whatIsThis = authenticationToken.getName();
-        String what = authenticationToken.toString();
-        log.info("whatIsThis 와 what 도대체 이게 뭐지? ={}, {}", whatIsThis, what);
-
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
         //토큰 만들기
         TokenDto tokenDto = jwtTokenProvider.generateTokenDto(authentication);
