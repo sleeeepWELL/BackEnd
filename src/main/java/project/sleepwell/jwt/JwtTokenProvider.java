@@ -87,6 +87,7 @@ public class JwtTokenProvider {
 
     //토큰 유효성 테스트
     public boolean validateToken(String token) {
+        log.info("프론트에서 보낸 토큰 -> 토큰 유효성 검사 = {}", token);
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;

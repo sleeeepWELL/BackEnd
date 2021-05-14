@@ -19,6 +19,7 @@ import project.sleepwell.domain.user.UserRepository;
 import project.sleepwell.jwt.JwtTokenProvider;
 import project.sleepwell.web.dto.TokenDto;
 import java.util.Collections;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -46,16 +47,13 @@ public class KakaoService {
                 .orElse(null);
 
 
-        //슬립웰에 처음 들어온 유저. 카카오 정보로 슬립웰에 회원가입 시킨다.
+        //카카오 로그인을 처음하는 유저
         if (kakaoUser == null) {
             User sameUser = null;
-            //카카오 이메일이 슬립웰 db 에 존재할 때
-            if(email.equals(userRepository.findByEmail(email))){
-                sameUser = userRepository.findByEmail(email).orElseThrow(
-                        () -> new IllegalArgumentException("not found kakao user email ")
-                );
-            }
-            //카카오 이메일로 회원 정보를 찾았는데, 슬립웰에서 같은 이메일을 사용하는 유저가 있을 때.
+            User existedUser = userRepository.findByEmail(email).orElse(null);
+            sameUser = existedUser;
+
+
             if (sameUser != null) {
                 kakaoUser = sameUser;
                 kakaoUser.setKakaoId(kakaoId);
@@ -93,6 +91,7 @@ public class KakaoService {
                 .build();
 
         refreshTokenRepository.save(refreshToken);
+        log.info("기존 카카오 유저가 로그인 했을 때, 카카오 토큰 -> 슬립웰 토큰 생성 완료 = {}", kakaoUser.getEmail());
 
         return tokenDto;
     }
