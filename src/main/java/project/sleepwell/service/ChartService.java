@@ -195,76 +195,6 @@ public class ChartService {
         return dayOfConditionList;
     }
 
-    // 이번주 수면시간 표
-    public List<List<Integer>> weeklyTable(LocalDate today) {
-        User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(
-                () -> new IllegalArgumentException("There is no user.")
-        );
-
-        //주간 데이터
-        LocalDate aWeekAgo = today.minusDays(7L);
-        List<Cards> weeklyCards = cardsRepository.findCardsBySelectedAtIsAfterAndUser(aWeekAgo, user); // 7일까지의 유저 카드 불러오기
-
-        //리턴할 그릇
-        List<List<Integer>> weeklyTable = new ArrayList<>();
-
-        //항목별 주간 데이터
-        List<Integer> weeklyStartSleep = new ArrayList<>();
-        List<Integer> weeklyEndSleep = new ArrayList<>();
-        List<Integer> weeklyTotalSleep = new ArrayList<>();
-
-        //해당 날짜 데이터
-        Integer StartSleep = 0;
-        Integer EndSleep = 0;
-        Integer TotalSleep = 0;
-
-        for (int i = 0; i < weeklyCards.size(); i++){
-            Integer startSleepHour = weeklyCards.get(i).getStartSleep().getHour();
-            Integer startSleepMinute = weeklyCards.get(i).getStartSleep().getMinute();
-
-            StartSleep += startSleepHour*60 + startSleepMinute; // 주간 취침 시간 합(분)
-
-            Integer endSleepHour = weeklyCards.get(i).getEndSleep().getHour();
-            Integer endSleepMinute = weeklyCards.get(i).getEndSleep().getMinute();
-
-            EndSleep += endSleepHour*60 + endSleepMinute; // 주간 기상 시간 합(분)
-
-            Integer totalSleepHour = Math.toIntExact(weeklyCards.get(i).getTotalSleepHour());
-            Integer totalSleepMinute = Math.toIntExact(weeklyCards.get(i).getTotalSleepMinute());
-
-            TotalSleep += totalSleepHour*60 + totalSleepMinute; // 주간 수면 시간 합(분)
-        }
-
-        try {
-            weeklyStartSleep.add(StartSleep/weeklyCards.size()/60); // 주간 취침시간(분) -> 시간
-            weeklyStartSleep.add(StartSleep/weeklyCards.size()%60); // 주간 취침시간(분) -> 분
-            weeklyTable.add(weeklyStartSleep);
-
-            weeklyEndSleep.add(EndSleep/weeklyCards.size()/60); // 주간 기상시간(분) -> 시간
-            weeklyEndSleep.add(EndSleep/weeklyCards.size()%60); // 주간 기상시간(분) -> 분
-            weeklyTable.add(weeklyEndSleep);
-
-            weeklyTotalSleep.add(TotalSleep/weeklyCards.size()/60); // 주간 수면시간(분) -> 시간
-            weeklyTotalSleep.add(TotalSleep/weeklyCards.size()%60); // 주간 수면시간(분) -> 분
-            weeklyTable.add(weeklyTotalSleep);
-            // [[평균 취침시간,분],[평균 기상시간,분],[평균 수면시간,분]]
-        }catch (ArithmeticException e){
-            List<Integer> zero = new ArrayList<>();
-            weeklyTable.add(zero);
-            weeklyTable.add(zero);
-            weeklyTable.add(zero);
-            weeklyTable.add(yourSleepTimeByConditions());
-            return weeklyTable;
-        }
-
-        weeklyTable.add(yourSleepTimeByConditions());
-        // [[주간 평균 취침시간,분],[주간 평균 기상시간,분],[주간 평균 수면시간,분],[적정 수면시간, 분]]
-
-        return weeklyTable;
-    }
-
-
-
     //적정 수면 시간, 총 수면 시간 비교 (주간)
     public List<LineChartResponseDto> compareToSleeptime(LocalDate today) {
 
@@ -345,5 +275,111 @@ public class ChartService {
 
     } //adequateSleepTimeOfToday
 
+    // 요약 표
+    public List<List<Integer>> summaryTable(LocalDate today) {
+        User user = userRepository.findById(SecurityUtil.getCurrentUserId()).orElseThrow(
+                () -> new IllegalArgumentException("There is no user.")
+        );
 
+        //주간 데이터
+        LocalDate aWeekAgo = today.minusDays(7L);
+        List<Cards> weeklyCards = cardsRepository.findCardsBySelectedAtIsAfterAndUser(aWeekAgo, user);
+        //월간 데이터
+        LocalDate aMonthAgo = today.minusDays(30L);
+        List<Cards> monthlyCards = cardsRepository.findCardsBySelectedAtIsAfterAndUser(aMonthAgo,user);
+
+        //요약 결과
+        List<List<Integer>> summaryTable = new ArrayList<>();
+
+        // tag
+        List<Integer> monthlyTags= new ArrayList<>();
+
+        Integer exercise = 0;
+        Integer drink = 0;
+        Integer night = 0;
+        Integer midNightSnack = 0;
+
+        for (int i = 0; i < monthlyCards.size(); i++){
+            for (int j = 0; j < monthlyCards.get(i).getTag().size() ; j++){
+                if (monthlyCards.get(i).getTag().get(j).contains("운동")){
+                    exercise += 1;
+                }
+                if (monthlyCards.get(i).getTag().get(j).contains("음주")){
+                    drink += 1;
+                }
+                if (monthlyCards.get(i).getTag().get(j).contains("야식")){
+                    midNightSnack += 1;
+                }
+                if (monthlyCards.get(i).getTag().get(j).contains("야근")){
+                    night += 1;
+                }
+            }
+        }
+        monthlyTags.add(exercise);
+        monthlyTags.add(drink);
+        monthlyTags.add(midNightSnack);
+        monthlyTags.add(night);
+
+        summaryTable.add(monthlyTags);
+
+        // condtions
+        List<Integer> monthlyConditions= new ArrayList<>();
+        Integer soBad = 0;
+        Integer bad = 0;
+        Integer soSo = 0;
+        Integer good = 0;
+        Integer soGood = 0;
+
+        for (int i = 0; i < monthlyCards.size(); i++) {
+            if (monthlyCards.get(i).getConditions() == 1) {
+                soBad += 1;
+            }
+            if (monthlyCards.get(i).getConditions() == 2) {
+                bad += 1;
+            }
+            if (monthlyCards.get(i).getConditions() == 3) {
+                soSo += 1;
+            }
+            if (monthlyCards.get(i).getConditions() == 4) {
+                good += 1;
+            }
+            if (monthlyCards.get(i).getConditions() == 5) {
+                soGood += 1;
+            }
+        }
+        monthlyConditions.add(soBad);
+        monthlyConditions.add(bad);
+        monthlyConditions.add(soSo);
+        monthlyConditions.add(good);
+        monthlyConditions.add(soGood);
+
+        summaryTable.add(monthlyConditions);
+
+        //수면시간 주간 데이터
+        List<Integer> weeklyTotalSleep = new ArrayList<>();
+
+        //해당 날짜 수면시간 데이터
+        Integer TotalSleep = 0;
+
+        for (int i = 0; i < weeklyCards.size(); i++){
+            Integer totalSleepHour = Math.toIntExact(weeklyCards.get(i).getTotalSleepHour());
+            Integer totalSleepMinute = Math.toIntExact(weeklyCards.get(i).getTotalSleepMinute());
+
+            TotalSleep += totalSleepHour*60 + totalSleepMinute; // 주간 수면 시간 합(분)
+        }
+
+        try {
+            weeklyTotalSleep.add(TotalSleep/weeklyCards.size()/60); // 주간 수면시간(분) -> 시간
+            weeklyTotalSleep.add(TotalSleep/weeklyCards.size()%60); // 주간 수면시간(분) -> 분
+            summaryTable.add(weeklyTotalSleep);
+
+        }catch (ArithmeticException e){
+            List<Integer> zero = new ArrayList<>();
+            zero.add(0);
+            zero.add(0);
+            summaryTable.add(zero);
+        }
+
+        return summaryTable;
+    }
 }

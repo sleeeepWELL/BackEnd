@@ -30,20 +30,21 @@ public class ChartController {
         return chartService.tagBarChart(today);
     }
 
+    // 현재까지의 컨디션 -> 잔디심기
     @GetMapping("/chart/grassChart")
     public List<Map<String,Object>> grassChart () {
         return chartService.grassChart();
     }
 
-    @GetMapping("/chart/table/{today}")
-    public List<List<Integer>> weeklyTable (@PathVariable("today") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate today) {
-        return chartService.weeklyTable(today);
-    }
-
-
     //주간 - 적정 수면 시간과 나의 수면 시간
     @GetMapping("/chart/lineChart/{today}")
     public List<LineChartResponseDto> compareToSleeptime(@PathVariable @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate today) {
         return chartService.compareToSleeptime(today);
+    }
+
+    //요약 테이블
+    @GetMapping("/chart/table/{today}")
+    public List<List<Integer>> summaryTable (@PathVariable("today") @DateTimeFormat(pattern="yyyy-MM-dd") LocalDate today) {
+        return chartService.summaryTable(today);
     }
 }
