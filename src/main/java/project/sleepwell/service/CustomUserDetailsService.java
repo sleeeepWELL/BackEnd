@@ -25,8 +25,6 @@ public class CustomUserDetailsService implements UserDetailsService {
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        //사실상 loadUserByEmail
-        log.info("loadUserByUserName.String username = {}", email);
         Optional<User> user = userRepository.findByEmail(email);
 
         return user.map(this::principalDetails)

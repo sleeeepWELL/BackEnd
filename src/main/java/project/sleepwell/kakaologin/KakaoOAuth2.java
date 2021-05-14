@@ -66,7 +66,7 @@ public class KakaoOAuth2 {
         JSONObject rjson = new JSONObject(tokenJson);
         String accessToken = rjson.getString("access_token");
 
-        System.out.println("액세스 토큰 제발!!!" + accessToken);
+        System.out.println("액세스 토큰(카카오)" + accessToken);
 
         return accessToken;
     }
