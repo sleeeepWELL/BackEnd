@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
 import project.sleepwell.domain.cards.Cards;
 import project.sleepwell.service.CardsService;
+import project.sleepwell.util.LogExecutionTime;
 import project.sleepwell.web.dto.CardsRequestDto;
 
 import java.time.LocalDate;
@@ -29,6 +30,7 @@ public class CardsRestController {
 
     //내 캘린더 조회
     @GetMapping("/cards/calendars")
+    @LogExecutionTime
     public List<Cards> getMyCalendars() {
         return cardsService.getMyCalendars();
     }
