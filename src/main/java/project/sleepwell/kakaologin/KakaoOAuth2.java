@@ -33,7 +33,6 @@ public class KakaoOAuth2 {
 
 
     private String getAccessToken(String code) {
-        log.info("프론트에서 받은 코드(getAccessToken 메서드) = {}", code);
         //HttpHeader 오브젝트 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -60,13 +59,9 @@ public class KakaoOAuth2 {
                 String.class
         );
 
-        log.info("카카오에 토큰 요청, response = {}", response);
-
         String tokenJson = response.getBody();
         JSONObject rjson = new JSONObject(tokenJson);
         String accessToken = rjson.getString("access_token");
-
-        System.out.println("액세스 토큰(카카오)" + accessToken);
 
         return accessToken;
     }

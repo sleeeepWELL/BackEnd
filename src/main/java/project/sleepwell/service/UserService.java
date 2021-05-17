@@ -28,7 +28,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
 
-    private final AuthenticationManagerBuilder authenticationManagerBuilder;    //비밀번호 검증
+    private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtTokenProvider jwtTokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
@@ -55,7 +55,6 @@ public class UserService {
     //login
     @Transactional
     public TokenDto login(LoginDto loginDto) {
-        //email, password 를 인자로 받아서 authenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = loginDto.toAuthentication();
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
@@ -143,7 +142,6 @@ public class UserService {
     //비밀번호 찾기 (새비밀번호 설정)
     @Transactional
     public void setPassword(PasswordRequestDto requestDto) {
-
         if (!requestDto.getPassword().equals(requestDto.getPasswordCheck())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
@@ -151,7 +149,6 @@ public class UserService {
         User user = userRepository.findByEmail(requestDto.getEmail()).orElseThrow(
                 () -> new IllegalArgumentException("There is no user.")
         );
-        log.info("현재 비밀번호 재설정 요청한 유저 = {}", user.getEmail());
         String encodedPassword = passwordEncoder.encode(requestDto.getPassword());
         user.updatePassword(encodedPassword);
 
