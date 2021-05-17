@@ -86,8 +86,6 @@ public class EmailCertificationService {
 
     //이메일 보내기 (회원가입 시 인증용 이메일)
     private MimeMessage createMessage(String email, String randomNumber) throws MessagingException, UnsupportedEncodingException {
-        log.info("받는 사람 = {}", email);
-        log.info("인증 번호 = {}", randomNumber);
 
         MimeMessage message = emailSender.createMimeMessage();
         //to.you
@@ -118,11 +116,8 @@ public class EmailCertificationService {
 
     //이메일 보내기 (비밀번호 찾기 시 인증용)
     private MimeMessage createMessageToChangePw(String email, String randomNumber) throws MessagingException, UnsupportedEncodingException {
-        log.info("받는 사람 = {}", email);
-        log.info("인증 번호 = {}", randomNumber);
 
         MimeMessage message = emailSender.createMimeMessage();
-//        String verificationCode = settingCode(keyNum);
         //to.you
         message.addRecipients(MimeMessage.RecipientType.TO, email);
         //mail title (상단에 노출)

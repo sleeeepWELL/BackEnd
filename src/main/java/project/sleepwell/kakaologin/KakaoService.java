@@ -19,7 +19,6 @@ import project.sleepwell.domain.user.UserRepository;
 import project.sleepwell.jwt.JwtTokenProvider;
 import project.sleepwell.web.dto.TokenDto;
 import java.util.Collections;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -91,7 +90,6 @@ public class KakaoService {
                 .build();
 
         refreshTokenRepository.save(refreshToken);
-        log.info("기존 카카오 유저가 로그인 했을 때, 카카오 토큰 -> 슬립웰 토큰 생성 완료 = {}", kakaoUser.getEmail());
 
         return tokenDto;
     }

@@ -7,12 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import project.sleepwell.config.MyConfigurationProperties;
-import project.sleepwell.domain.user.User;
 import project.sleepwell.kakaologin.KakaoService;
 import project.sleepwell.service.UserService;
 import project.sleepwell.web.dto.*;
 import javax.validation.Valid;
-import java.util.List;
 import java.util.Map;
 
 @Slf4j
@@ -26,12 +24,6 @@ public class UserController {
     @Autowired
     MyConfigurationProperties myConfigurationProperties;
 
-
-    //정보 조회하기 위해 만들어놓은 메서드
-    @GetMapping("/allUsers")
-    public List<User> getAllUsers() {
-        return userService.getAllUsers();
-    }
 
     //현재 로그인 한 user 의 username 조회
     @GetMapping("/username")
@@ -60,7 +52,6 @@ public class UserController {
     //kakao
     @RequestMapping("/oauth/callback/kakao")
     public ResponseEntity<TokenDto> kakaoLogin(@RequestParam String code) {
-        log.info("프론트에서 받은 코드 = {}", code);
         TokenDto tokenDto = kakaoService.kakaoLogin(code);
         return ResponseEntity.ok(tokenDto);
     }

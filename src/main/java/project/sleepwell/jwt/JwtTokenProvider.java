@@ -67,14 +67,12 @@ public class JwtTokenProvider {
 
 
     public Authentication getAuthentication(String accessToken) {
-        //토큰 복호화 해서 토큰에 들어 있는 정보 꺼내기
         Claims claims = parseClaims(accessToken);
 
         if (claims.get(AUTHORITIES_KEY) == null) {
             throw new RuntimeException("권한 정보가 없는 토큰입니다.");
         }
 
-        //claims 권한 정보 가져오기
         Collection<? extends GrantedAuthority> authorities = Arrays.stream(claims.get(AUTHORITIES_KEY).toString().split(","))
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toList());
@@ -85,9 +83,7 @@ public class JwtTokenProvider {
     }
 
 
-    //토큰 유효성 테스트
     public boolean validateToken(String token) {
-        log.info("프론트에서 보낸 토큰 -> 토큰 유효성 검사 = {}", token);
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
@@ -104,7 +100,6 @@ public class JwtTokenProvider {
     }
 
 
-    //변환 하기
     private Claims parseClaims(String accessToken) {
         try {
             //token 을 이용해서 claims 만들기
