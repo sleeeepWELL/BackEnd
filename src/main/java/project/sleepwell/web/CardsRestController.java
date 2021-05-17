@@ -30,7 +30,7 @@ public class CardsRestController {
 
     //내 캘린더 조회
     @GetMapping("/cards/calendars")
-    @LogExecutionTime
+//    @LogExecutionTime
     public List<Cards> getMyCalendars() {
         return cardsService.getMyCalendars();
     }
