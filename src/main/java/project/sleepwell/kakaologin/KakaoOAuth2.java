@@ -42,8 +42,8 @@ public class KakaoOAuth2 {
         params.add("grant_type", "authorization_code");
         params.add("client_id", myConfigurationProperties.getClientId());
 //        params.add("redirect_uri", "http://localhost:3000/oauth/callback/kakao");//프론트 공통
-//        params.add("redirect_uri", "http://sleepwell.com.s3-website.ap-northeast-2.amazonaws.com/oauth/callback/kakao"); //지은님 s3
-        params.add("redirect_uri", "http://sleeepwell.s3-website.ap-northeast-2.amazonaws.com/oauth/callback/kakao"); //규현님 s3
+        params.add("redirect_uri", "https://teamsleepwell.com/oauth/callback/kakao"); //https
+//        params.add("redirect_uri", "http://sleeepwell.s3-website.ap-northeast-2.amazonaws.com/oauth/callback/kakao"); //규현님 s3
         params.add("code", code);
         params.add("client_secret", myConfigurationProperties.getClientSecret());
 
