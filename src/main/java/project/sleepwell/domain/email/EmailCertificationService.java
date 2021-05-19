@@ -106,7 +106,7 @@ public class EmailCertificationService {
         msg += "<p style=\"font-size: 13px; padding-right: 30px; padding-left: 30px;\">" +
                 "이 인증번호는 3분 동안 유효합니다."+
                 "</p>";
-        msg += "<a href=\"https://sleepwell.com\" style=\"padding-right: 30px; padding-left: 30px; text-decoration: none; color: #434245;\" rel=\"noreferrer noopener\" target=\"_blank\">2021 SleepWell</a>";
+        msg += "<a href=\"https://teamsleepwell.com\" style=\"padding-right: 30px; padding-left: 30px; text-decoration: none; color: #434245;\" rel=\"noreferrer noopener\" target=\"_blank\">2021 SleepWell</a>";
 
         message.setText(msg, "utf-8", "html");
         message.setFrom(new InternetAddress("yihyeonehyeon@gmail.com","SleepWell"));
@@ -138,7 +138,7 @@ public class EmailCertificationService {
         msg += "<p style=\"font-size: 13px; padding-right: 30px; padding-left: 30px;\">" +
                 "이 인증번호는 3분 동안 유효합니다."+
                 "</p>";
-        msg += "<a href=\"https://sleepwell.com\" style=\"padding-right: 30px; padding-left: 30px; text-decoration: none; color: #434245;\" rel=\"noreferrer noopener\" target=\"_blank\">2021 SleepWell</a>";
+        msg += "<a href=\"https://teamsleepwell.com\" style=\"padding-right: 30px; padding-left: 30px; text-decoration: none; color: #434245;\" rel=\"noreferrer noopener\" target=\"_blank\">2021 SleepWell</a>";
 
         message.setText(msg, "utf-8", "html");
         message.setFrom(new InternetAddress("yihyeonehyeon@gmail.com","SleepWell"));
