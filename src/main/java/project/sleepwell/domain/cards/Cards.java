@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import project.sleepwell.domain.Timestamped;
 import project.sleepwell.domain.user.User;
 
 import javax.persistence.*;
@@ -16,7 +17,7 @@ import java.util.List;
 @Getter
 @NoArgsConstructor
 @Entity
-public class Cards{
+public class Cards extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
