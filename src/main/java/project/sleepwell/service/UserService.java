@@ -39,7 +39,10 @@ public class UserService {
     //sign up
     @Transactional
     public Long createUser(SignupRequestDto signupRequestDto) {
-        if (userRepository.existsByEmail(signupRequestDto.getEmail())) {
+
+        String validatedEmail = signupRequestDto.getEmail().replaceAll(" ", "");
+
+        if (userRepository.existsByEmail(validatedEmail)) {
             throw new RuntimeException("이미 사용 중인 이메일 입니다.");
         }
 
@@ -47,7 +50,7 @@ public class UserService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        User user = signupRequestDto.toUser(passwordEncoder);
+        User user = signupRequestDto.toUser(passwordEncoder, validatedEmail);
         return userRepository.save(user).getId();
 
     }
@@ -58,9 +61,9 @@ public class UserService {
         UsernamePasswordAuthenticationToken authenticationToken = loginDto.toAuthentication();
 
         Authentication authentication = authenticationManagerBuilder.getObject().authenticate(authenticationToken);
-        //토큰 만들기
+
         TokenDto tokenDto = jwtTokenProvider.generateTokenDto(authentication);
-        //refresh token 저장
+
         RefreshToken refreshToken = RefreshToken.builder()
                 .refreshKey(authentication.getName())
                 .refreshValue(tokenDto.getRefreshToken())
@@ -77,30 +80,27 @@ public class UserService {
     //reissue
     @Transactional
     public TokenDto reissue(TokenRequestDto tokenRequestDto) {
-        //refresh token 검증 하기
+
         if (!jwtTokenProvider.validateToken(tokenRequestDto.getRefreshToken())) {
             throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
         }
 
-        //access token 을 이용해 authentication 객체 리턴
         Authentication authentication = jwtTokenProvider.getAuthentication(tokenRequestDto.getAccessToken());
 
-        //refresh Token 가져오기
         RefreshToken refreshToken = refreshTokenRepository.findByRefreshKey(authentication.getName())
                 .orElseThrow(
                         () -> new RuntimeException("로그아웃 한 사용자 입니다.")
                 );
-        //일치 여부 검사
+
         if (!refreshToken.getRefreshValue().equals(tokenRequestDto.getRefreshToken())) {
             throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
         }
 
-        //새 토큰 생성
+
         TokenDto tokenDto = jwtTokenProvider.generateTokenDto(authentication);
         RefreshToken newRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
         refreshTokenRepository.save(newRefreshToken);
 
-        //토큰 발급
         return tokenDto;
 
     }
