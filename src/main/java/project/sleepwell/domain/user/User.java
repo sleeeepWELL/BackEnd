@@ -6,7 +6,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import project.sleepwell.domain.Timestamped;
 import project.sleepwell.domain.cards.Cards;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;

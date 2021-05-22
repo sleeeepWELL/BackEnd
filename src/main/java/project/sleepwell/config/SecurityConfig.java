@@ -80,7 +80,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
-//                .antMatchers(HttpMethod.POST, "/signup").permitAll()
 
                 .anyRequest().authenticated()
 

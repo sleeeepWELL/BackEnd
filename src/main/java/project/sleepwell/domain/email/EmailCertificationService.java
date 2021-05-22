@@ -6,7 +6,6 @@ import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import project.sleepwell.domain.user.UserRepository;
-
 import javax.mail.MessagingException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
@@ -24,15 +23,16 @@ public class EmailCertificationService {
     private final UserRepository userRepository;
 
 
-    //email 로 인증번호를 발송하고, 발송 정보(email, certificationNumber)를 Redis 에 저장
     public void sendEmail(String email) throws UnsupportedEncodingException, MessagingException {
 
-        if (userRepository.findByEmail(email).isPresent()) {
-            throw new IllegalArgumentException("이메일 중복");
+        String validatedEmail = email.replaceAll(" ", "");
+
+        if (userRepository.existsByEmail(validatedEmail)) {
+            throw new RuntimeException("이미 사용 중인 이메일 입니다.");
         }
 
         String randomNumber = makeRandomNumber();
-        MimeMessage message = createMessage(email, randomNumber);
+        MimeMessage message = createMessage(validatedEmail, randomNumber);
         try{
             emailSender.send(message);
             log.info("send authorize code to email.");
@@ -42,7 +42,7 @@ public class EmailCertificationService {
             throw new IllegalArgumentException();
         }
 
-        emailCertificationRepository.createEmailCertification(email, randomNumber);
+        emailCertificationRepository.createEmailCertification(validatedEmail, randomNumber);
     }
 
     //파라미터로 받은 이메일로 인증번호 발송 (비밀번호 재설정용)
@@ -69,18 +69,25 @@ public class EmailCertificationService {
     //유저가 입력한 인증번호가 Redis 에 저장된 인증번호와 일치하는지 확인
     public void verifyEmail(EmailCertificationRequestDto requestDto) {
 
+        String validatedEmail = requestDto.getEmail().replaceAll(" ", "");
+
         if (isVerify(requestDto)) {
             throw new CertificationNumberMismatchException("인증번호가 일치하지 않습니다.");
         }
 
-        emailCertificationRepository.removeEmailCertification(requestDto.getEmail());
+        emailCertificationRepository.removeEmailCertification(validatedEmail);
     }
 
     private boolean isVerify(EmailCertificationRequestDto requestDto) {
-        boolean isExistKey = emailCertificationRepository.hasKey(requestDto.getEmail());
-        String findCtfKey = emailCertificationRepository.getEmailCertificationNum(requestDto.getEmail());
 
-        return !(isExistKey && findCtfKey.equals(requestDto.getCertificationNumber()));
+        String validatedEmail = requestDto.getEmail().replaceAll(" ", "");
+
+        boolean isExistKey = emailCertificationRepository.hasKey(validatedEmail);
+        String findCtfKey = emailCertificationRepository.getEmailCertificationNum(validatedEmail);
+
+        String validatedNumber = requestDto.getCertificationNumber().replaceAll(" ", "");
+
+        return !(isExistKey && findCtfKey.equals(validatedNumber));
     }
 
 
